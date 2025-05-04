@@ -9,40 +9,165 @@ var inventory_showing := false
 @onready var inventory = $Content/ProfileAndInventory/InventoryPanel/Inventory
 
 var dummy_weap_data = {
-	0 : {
-		"Name" : "Wooden Sword",
-		"Stats" : {
-			"Attack" : 5
-		}
+	"Sword": {
+		0 : {
+			"Name" : "Wooden Sword",
+			"Stats" : {
+				"Attack" : 5,
+				"Str" : 20,
+			}
+		},
+		
+		1 : {
+			"Name" : "Stone Sword",
+			"Stats" : {
+				"Attack" : 15,
+				"Str" : 20,
+			}
+		},
+		
+		2 : {
+			"Name" : "Iron Sword",
+			"Stats" : {
+				"Attack" : 25,
+				"Str" : 20,
+			}
+		},
+		
+		3 : {
+			"Name" : "Sword Sword",
+			"Stats" : {
+				"Attack" : 55,
+				"Str" : 20,
+			}
+		},
+		
+		4 : {
+			"Name" : "Sword Sword God",
+			"Stats" : {
+				"Attack" : 5555,
+				"Str" : 20,
+			}
+		},
+	},
+	"Staff": {
+		0 : {
+			"Name" : "Wooden Staff",
+			"Stats" : {
+				"Attack" : 5,
+				"Int" : 20,
+			}
+		},
+		
+		1 : {
+			"Name" : "Stone Staff",
+			"Stats" : {
+				"Attack" : 15,
+				"Int" : 20,
+			}
+		},
+		
+		2 : {
+			"Name" : "Iron Staff",
+			"Stats" : {
+				"Attack" : 25,
+				"Int" : 20,
+			}
+		},
+		
+		3 : {
+			"Name" : "Staff Staff",
+			"Stats" : {
+				"Attack" : 55,
+				"Int" : 20,
+			}
+		},
+		
+		4 : {
+			"Name" : "Staff Staff God",
+			"Stats" : {
+				"Attack" : 5555,
+				"Int" : 20,
+			}
+		},
+	},
+	"Bow": {
+		0 : {
+			"Name" : "Wooden Bow",
+			"Stats" : {
+				"Attack" : 5,
+				"Agi" : 20,
+			}
+		},
+		
+		1 : {
+			"Name" : "Stone Bow",
+			"Stats" : {
+				"Attack" : 15,
+				"Agi" : 20,
+			}
+		},
+		
+		2 : {
+			"Name" : "Iron Bow",
+			"Stats" : {
+				"Attack" : 25,
+				"Agi" : 20,
+			}
+		},
+		
+		3 : {
+			"Name" : "Bow Bow",
+			"Stats" : {
+				"Attack" : 55,
+				"Agi" : 20,
+			}
+		},
+		
+		4 : {
+			"Name" : "Bow Bow God",
+			"Stats" : {
+				"Attack" : 5555,
+				"Agi" : 20,
+			}
+		},
 	},
 	
-	1 : {
-		"Name" : "Stone Sword",
-		"Stats" : {
-			"Attack" : 15
-		}
+}
+
+var dummy_armor_data = {
+	"Helmet": {
+		1: {
+			"Name": "Wooden Helmet",
+			"Stats": {
+				"Health": 50,
+				"Defense": 20
+			}
+		},
+		2: {
+			"Name": "Stone Helmet",
+			"Stats": {
+				"Health": 70,
+				"Defense": 30,
+			}
+		},
 	},
-	
-	2 : {
-		"Name" : "Iron Sword",
-		"Stats" : {
-			"Attack" : 25
+	"Chestplate": {
+		1: {
+			"Name": "Wooden Chestplate",
+			"Stats": {
+				"Health": 150,
+				"Defense": 50,
+			}
+		},
+		2: {
+			"Name": "Stone Chestplate",
+			"Stats": {
+				"Health": 250,
+				"Defense": 100,
+			}
 		}
-	},
-	
-	3 : {
-		"Name" : "Sword Sword",
-		"Stats" : {
-			"Attack" : 55
-		}
-	},
-	
-	4 : {
-		"Name" : "Sword Sword God",
-		"Stats" : {
-			"Attack" : 5555
-		}
-	},
+	}
 }
 
 
@@ -91,13 +216,47 @@ func show_inventory():
 	get_profile_data()
 	profile_data_alr_show = true
 	
-	for i in range(dummy_weap_data.size()):
-		var test_button = Button.new()
-		inventory.add_child(test_button)
-		test_button.text = dummy_weap_data[i]["Name"]
-		test_button.mouse_entered.connect(show_item_info.bind(i))
+	
+	
+	for weapon_type in dummy_weap_data.keys():
+		for weapon_id in dummy_weap_data[weapon_type].keys():
+			var weapon_button = Button.new()
+			inventory.add_child(weapon_button)
+			weapon_button.text = dummy_weap_data[weapon_type][weapon_id]["Name"]
+			weapon_button.mouse_entered.connect(show_item_info.bind(weapon_id, "weapon", "" , weapon_type))
+	
+	for armor_type in dummy_armor_data.keys():
+		for armor_id in dummy_armor_data[armor_type].keys():
+			var armor_button = Button.new()
+			inventory.add_child(armor_button)
+			armor_button.text = dummy_armor_data[armor_type][armor_id]["Name"]
+			armor_button.mouse_entered.connect(show_item_info.bind(armor_id, "armor", armor_type, ""))
+		
+	
 	
 
-func show_item_info(item_id: int):
-	var item_stats = dummy_weap_data[item_id]["Stats"]
-	print(item_stats)
+func show_item_info(item_id: int, item_type: String, armor_type: String = "", weapon_type: String = ""):
+	match item_type:
+		"weapon":
+			var weapon_info = dummy_weap_data[weapon_type][item_id]
+			var weapon_name = weapon_info["Name"]
+			var weapon_attack = weapon_info["Stats"]["Attack"]
+			var weapon_stats
+			match weapon_type:
+				"Sword":
+					weapon_stats = "Str +" + str(weapon_info["Stats"]["Str"])
+				"Staff":
+					weapon_stats = "Int +" + str(weapon_info["Stats"]["Int"])
+				"Bow":
+					weapon_stats = "Agi +" + str(weapon_info["Stats"]["Agi"])
+				_:
+					return
+			$Content/ProfileAndInventory/ItemDetailPanel/ItemDetailText.text = "Weapon Name : " + weapon_name + "\nWeapon Attack : " + str(weapon_attack) + "\nWeapon Stats : " + weapon_stats
+		"armor":
+			var armor_info = dummy_armor_data[armor_type][item_id]
+			var armor_name = armor_info["Name"]
+			var armor_health = armor_info["Stats"]["Health"]
+			var armor_defense = armor_info["Stats"]["Defense"]
+			$Content/ProfileAndInventory/ItemDetailPanel/ItemDetailText.text = "Armor Name : " + armor_name + "\nArmor Health : " + str(armor_health) + "\nArmor Defense : " + str(armor_defense)
+			
+			

@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://dy2s3bub8hwfp"]
+[gd_scene load_steps=4 format=3 uid="uid://dy2s3bub8hwfp"]
 
 [ext_resource type="Script" uid="uid://negt1n1c65d1" path="res://GUI/gui.gd" id="1_3w8el"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3w8el"]
 bg_color = Color(0.202077, 0.149073, 0.12129, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_egdk1"]
+bg_color = Color(0.191703, 0.23429, 0.120985, 1)
 
 [node name="GUI" type="Control"]
 layout_mode = 3
@@ -138,3 +141,15 @@ columns = 3
 [node name="Button" type="Button" parent="Content/ProfileAndInventory/InventoryPanel/Inventory"]
 layout_mode = 2
 text = "Test"
+
+[node name="ItemDetailPanel" type="Panel" parent="Content/ProfileAndInventory"]
+layout_mode = 0
+offset_top = 320.0
+offset_right = 320.0
+offset_bottom = 448.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_egdk1")
+
+[node name="ItemDetailText" type="Label" parent="Content/ProfileAndInventory/ItemDetailPanel"]
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 128.0
