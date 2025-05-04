@@ -73,7 +73,6 @@ func show_profile():
 func get_profile_data():
 	if PlayerData.player_data == {}:
 		return 
-
 	
 	var player_data = PlayerData.player_data
 	var player_name = player_data["player_name"]
@@ -96,5 +95,9 @@ func show_inventory():
 		var test_button = Button.new()
 		inventory.add_child(test_button)
 		test_button.text = dummy_weap_data[i]["Name"]
+		test_button.mouse_entered.connect(show_item_info.bind(i))
 	
-	
+
+func show_item_info(item_id: int):
+	var item_stats = dummy_weap_data[item_id]["Stats"]
+	print(item_stats)
