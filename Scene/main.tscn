@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7x4eqjegvdok"]
+
+[ext_resource type="Script" uid="uid://bnlubowjgxti2" path="res://Scene/main.gd" id="1_f6udf"]
+[ext_resource type="PackedScene" uid="uid://dy2s3bub8hwfp" path="res://GUI/gui.tscn" id="2_sblpm"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f6udf")
+
+[node name="GUI" type="CanvasLayer" parent="."]
+
+[node name="GUI" parent="GUI" instance=ExtResource("2_sblpm")]
