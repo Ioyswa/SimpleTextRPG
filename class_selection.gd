@@ -43,6 +43,8 @@ func save_data(save_slot: int, save_data: Dictionary):
 func set_player_class(name_of_class: String):
 	PlayerData.player_data["player_class"] = name_of_class
 	PlayerData.player_data["player_stats"] = set_player_stats(name_of_class)
+	PlayerData.player_data["player_gear"] = set_player_starter_gear(name_of_class)
+	#print(PlayerData.player_data)
 	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
 	get_tree().change_scene_to_file("res://Scene/main.tscn")
 
@@ -58,3 +60,14 @@ func set_player_stats(name_of_class: String) -> Dictionary:
 	
 	return player_stats
 	
+func set_player_starter_gear(name_of_class: String) -> Dictionary:
+	var player_gear = {}
+	match name_of_class:
+		"Warrior":
+			player_gear = EquipmentData.starter_gear["Warrior"]
+		"Archer":
+			player_gear = EquipmentData.starter_gear["Archer"]
+		"Mage":
+			player_gear = EquipmentData.starter_gear["Mage"]
+			
+	return player_gear

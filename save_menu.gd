@@ -17,14 +17,16 @@ func _ready():
 	for i in range(3):
 		var save_button = Button.new()
 		save_slot.add_child(save_button)
-		save_button.add_theme_font_size_override("font_size", 58)
+
 		var data = load_data(i)
 		if data:
 			save_buttons_count += 1
+			save_button.add_theme_font_size_override("font_size", 58)
 			save_button.text = data["player_name"]
 			save_button.pressed.connect(load_existing_data.bind(data, i))
 		else:
 			save_button.text = "  +  "
+			save_button.add_theme_font_size_override("font_size", 128)
 			save_button.pressed.connect(create_new_save.bind(i))
 		save_buttons.append(save_button)
 	

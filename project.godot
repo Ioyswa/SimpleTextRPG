@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 ClassData="*res://Data/class_data.gd"
 PlayerData="*res://Data/player_data.gd"
+EquipmentData="*res://Data/equipment_data.gd"
 
 [display]
 
