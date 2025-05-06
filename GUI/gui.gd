@@ -233,6 +233,27 @@ func show_inventory():
 			armor_button.mouse_entered.connect(show_item_info.bind(armor_id, "armor", armor_type, ""))
 		
 	
+	var player_gear = PlayerData.player_data["player_item"]
+	
+	for gear_type in player_gear.keys():
+		print("Gear Type : " + gear_type)
+		
+		for item_id in player_gear[gear_type].keys():
+			var item = player_gear[gear_type][item_id]
+			
+			
+			var item_name = item["Name"]
+	
+			var item_button = Button.new()
+			inventory.add_child(item_button)
+			item_button.text = item_name
+			
+			var item_stats = item["Stats"]
+			for stats_name in item_stats.keys():
+				var stats_value = item_stats[stats_name]
+	
+				print(" ", stats_name, ": ", stats_value)
+
 	
 
 func show_item_info(item_id: int, item_type: String, armor_type: String = "", weapon_type: String = ""):
