@@ -203,7 +203,7 @@ func get_profile_data():
 	var player_name = player_data["player_name"]
 	var player_class = player_data["player_class"]
 	var player_class_stats = ClassData.class_list[player_class]["Stats"]
-	print(player_class_stats)
+	#print(player_class_stats)
 	var player_stats = "\n##Strength : " + str(player_class_stats["str"]) + "\n##Agility : " + str(player_class_stats["agi"])  + "\n##Intelligence : " + str(player_class_stats["int"])
 	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats
 	$Content/ProfileAndInventory/ProfilePanel/ProfileText.text = profile_text
@@ -215,32 +215,29 @@ func show_inventory():
 	
 	get_profile_data()
 	profile_data_alr_show = true
+	var connected = false
 	
-	
-	
-	for weapon_type in dummy_weap_data.keys():
-		for weapon_id in dummy_weap_data[weapon_type].keys():
-			var weapon_button = Button.new()
-			inventory.add_child(weapon_button)
-			weapon_button.text = dummy_weap_data[weapon_type][weapon_id]["Name"]
-			weapon_button.mouse_entered.connect(show_item_info.bind(weapon_id, "weapon", "" , weapon_type))
-	
-	for armor_type in dummy_armor_data.keys():
-		for armor_id in dummy_armor_data[armor_type].keys():
-			var armor_button = Button.new()
-			inventory.add_child(armor_button)
-			armor_button.text = dummy_armor_data[armor_type][armor_id]["Name"]
-			armor_button.mouse_entered.connect(show_item_info.bind(armor_id, "armor", armor_type, ""))
+	#for weapon_type in dummy_weap_data.keys():
+		#for weapon_id in dummy_weap_data[weapon_type].keys():
+			#var weapon_button = Button.new()
+			#inventory.add_child(weapon_button)
+			#weapon_button.text = dummy_weap_data[weapon_type][weapon_id]["Name"]
+			#weapon_button.mouse_entered.connect(show_item_info.bind(weapon_id, "weapon", "" , weapon_type))
+	#
+	#for armor_type in dummy_armor_data.keys():
+		#for armor_id in dummy_armor_data[armor_type].keys():
+			#var armor_button = Button.new()
+			#inventory.add_child(armor_button)
+			#armor_button.text = dummy_armor_data[armor_type][armor_id]["Name"]
+			#armor_button.mouse_entered.connect(show_item_info.bind(armor_id, "armor", armor_type, ""))
+		#
+	#
+	var player_item = PlayerData.player_data["player_item"]
+	for item_type in player_item.keys():
+		#print("Gear Type : " + item_type)
 		
-	
-	var player_gear = PlayerData.player_data["player_item"]
-	
-	for gear_type in player_gear.keys():
-		print("Gear Type : " + gear_type)
-		
-		for item_id in player_gear[gear_type].keys():
-			var item = player_gear[gear_type][item_id]
-			
+		for item_id in player_item[item_type].keys():
+			var item = player_item[item_type][item_id]
 			
 			var item_name = item["Name"]
 	
@@ -248,36 +245,16 @@ func show_inventory():
 			inventory.add_child(item_button)
 			item_button.text = item_name
 			
+			
 			var item_stats = item["Stats"]
+			
 			for stats_name in item_stats.keys():
 				var stats_value = item_stats[stats_name]
-	
-				print(" ", stats_name, ": ", stats_value)
+				item_button.mouse_entered.connect(show_item_info.bind(item_id, item_type, item_name, str(stats_value)))
 
 	
 
-func show_item_info(item_id: int, item_type: String, armor_type: String = "", weapon_type: String = ""):
-	match item_type:
-		"weapon":
-			var weapon_info = dummy_weap_data[weapon_type][item_id]
-			var weapon_name = weapon_info["Name"]
-			var weapon_attack = weapon_info["Stats"]["Attack"]
-			var weapon_stats
-			match weapon_type:
-				"Sword":
-					weapon_stats = "Str +" + str(weapon_info["Stats"]["Str"])
-				"Staff":
-					weapon_stats = "Int +" + str(weapon_info["Stats"]["Int"])
-				"Bow":
-					weapon_stats = "Agi +" + str(weapon_info["Stats"]["Agi"])
-				_:
-					return
-			$Content/ProfileAndInventory/ItemDetailPanel/ItemDetailText.text = "Weapon Name : " + weapon_name + "\nWeapon Attack : " + str(weapon_attack) + "\nWeapon Stats : " + weapon_stats
-		"armor":
-			var armor_info = dummy_armor_data[armor_type][item_id]
-			var armor_name = armor_info["Name"]
-			var armor_health = armor_info["Stats"]["Health"]
-			var armor_defense = armor_info["Stats"]["Defense"]
-			$Content/ProfileAndInventory/ItemDetailPanel/ItemDetailText.text = "Armor Name : " + armor_name + "\nArmor Health : " + str(armor_health) + "\nArmor Defense : " + str(armor_defense)
-			
-			
+func show_item_info(item_id: String, item_type: String, item_name: String, item_stats: String):
+	var item_info = "Item id : " + item_id + "\nItem Type : " + item_type + "\nItem Name : " + item_name + "\nItem Stats : " + item_stats
+	$Content/ProfileAndInventory/ItemDetailPanel/ItemDetailText.text = item_info
+		
