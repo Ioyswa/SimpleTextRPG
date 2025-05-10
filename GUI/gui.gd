@@ -3,10 +3,15 @@ extends Control
 var content_active: String
 
 var profile_showing := false
-var profile_data_alr_show := false
 var inventory_showing := false
+var profile_data_alr_show := false
+var inventory_data_alr_show := false
 
-@onready var inventory = $Content/ProfileAndInventory/InventoryPanel/Inventory
+var selected_equipment : String
+var selected_equipment_data = {}
+
+@onready var inventory = $Content/ProfileAndInventory/Inventory/InventoryPanel/Inventory
+@onready var equip_button = $Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip
 
 var dummy_weap_data = {
 	"Sword": {
@@ -171,9 +176,7 @@ var dummy_armor_data = {
 }
 
 
-func _ready():
-	content_active = "Profile"
-	show_content(content_active)
+
 
 func _unhandled_key_input(event):
 	if event.is_action_pressed("open_profile"):
@@ -181,19 +184,90 @@ func _unhandled_key_input(event):
 		profile_showing = true
 		if content_active == "Profile" and profile_showing:
 			show_content(content_active)
+	if event.is_action_pressed("open_inventory"):
+		content_active = "Inventory"
+		inventory_showing = true
+		if content_active == "Inventory" and inventory_showing:
+			show_content(content_active)
 
 func show_content(content_name: String):
 	match content_name:
 		"Profile":
 			show_profile()
+		"Inventory":
 			show_inventory()
 		
 		
-		
+
+func show_equipment():
+	get_equipment_data()
+
 func show_profile():
-	$Content/ProfileAndInventory.visible = !$Content/ProfileAndInventory.visible
+	$Content/ProfileAndInventory/Profile.visible = !$Content/ProfileAndInventory/Profile.visible
+	get_profile_data()
+	profile_data_alr_show = true
 	
 
+func _on_stats_pressed():
+	get_profile_data()
+
+func _on_equipment_pressed():
+	show_equipment()
+
+
+func show_inventory():
+	$Content/ProfileAndInventory/Inventory.visible = !$Content/ProfileAndInventory/Inventory.visible
+	
+	if inventory_data_alr_show:
+		return
+	
+	inventory_data_alr_show = true
+	var connected = false
+	
+
+	var player_backpack = PlayerData.player_data["player_backpack"]
+	
+	for item_type in player_backpack.keys():
+		for item_id in player_backpack[item_type].keys():
+			var item = player_backpack[item_type][item_id]
+			var item_status = item["Status"]
+			if item_status == "Not Equip":
+				var item_name = item["Name"]
+				var item_button = Button.new()
+				inventory.add_child(item_button)
+				item_button.text = item_name
+				
+				var item_stats = item["Stats"]
+				
+				for stats_name in item_stats.keys():
+					var stats_value = item_stats[stats_name]
+					item_button.mouse_entered.connect(show_item_info.bind(item_id, item_type, item_name, str(stats_value)))
+						
+			
+	
+	
+	
+
+func get_equipment_data():
+	if PlayerData.player_data == {}:
+		return
+	
+	var player_item = PlayerData.player_data["player_item"]
+	var player_helmet = player_item["Helmet"]
+	var player_chestplate = player_item["Chestplate"]
+	var player_legging = player_item["Legging"]
+	var player_boots = player_item["Boots"]
+	var player_weapon = player_item["Weapon"]
+		
+	
+	if player_helmet == null: player_helmet = "None"
+	if player_chestplate == null: player_chestplate = "None"
+	if player_legging == null: player_legging = "None"
+	if player_boots == null: player_boots = "None"
+	if player_weapon == null: player_weapon = "None"
+	
+	var equipment_text = "Helmet : " + player_helmet + "\nChestplate : " + player_chestplate + "\nLegging : " + player_legging + "\nBoots : " + player_boots + "\nWeapon : " + player_weapon
+	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = equipment_text
 
 func get_profile_data():
 	if PlayerData.player_data == {}:
@@ -206,55 +280,42 @@ func get_profile_data():
 	#print(player_class_stats)
 	var player_stats = "\n##Strength : " + str(player_class_stats["str"]) + "\n##Agility : " + str(player_class_stats["agi"])  + "\n##Intelligence : " + str(player_class_stats["int"])
 	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats
-	$Content/ProfileAndInventory/ProfilePanel/ProfileText.text = profile_text
+	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = profile_text
 
-func show_inventory():
-	
-	if profile_data_alr_show:
-		return 
-	
-	get_profile_data()
-	profile_data_alr_show = true
-	var connected = false
-	
-	#for weapon_type in dummy_weap_data.keys():
-		#for weapon_id in dummy_weap_data[weapon_type].keys():
-			#var weapon_button = Button.new()
-			#inventory.add_child(weapon_button)
-			#weapon_button.text = dummy_weap_data[weapon_type][weapon_id]["Name"]
-			#weapon_button.mouse_entered.connect(show_item_info.bind(weapon_id, "weapon", "" , weapon_type))
-	#
-	#for armor_type in dummy_armor_data.keys():
-		#for armor_id in dummy_armor_data[armor_type].keys():
-			#var armor_button = Button.new()
-			#inventory.add_child(armor_button)
-			#armor_button.text = dummy_armor_data[armor_type][armor_id]["Name"]
-			#armor_button.mouse_entered.connect(show_item_info.bind(armor_id, "armor", armor_type, ""))
-		#
-	#
-	var player_item = PlayerData.player_data["player_item"]
-	for item_type in player_item.keys():
-		#print("Gear Type : " + item_type)
-		
-		for item_id in player_item[item_type].keys():
-			var item = player_item[item_type][item_id]
-			
-			var item_name = item["Name"]
-	
-			var item_button = Button.new()
-			inventory.add_child(item_button)
-			item_button.text = item_name
-			
-			
-			var item_stats = item["Stats"]
-			
-			for stats_name in item_stats.keys():
-				var stats_value = item_stats[stats_name]
-				item_button.mouse_entered.connect(show_item_info.bind(item_id, item_type, item_name, str(stats_value)))
-
-	
 
 func show_item_info(item_id: String, item_type: String, item_name: String, item_stats: String):
 	var item_info = "Item id : " + item_id + "\nItem Type : " + item_type + "\nItem Name : " + item_name + "\nItem Stats : " + item_stats
-	$Content/ProfileAndInventory/ItemDetailPanel/ItemDetailText.text = item_info
+	selected_equipment = item_info
+	selected_equipment_data["item_id"] = item_id
+	selected_equipment_data["item_type"] = item_type
+	selected_equipment_data["item_name"] = item_name
+	selected_equipment_data["item_stats"] = item_stats
+	$Content/ProfileAndInventory/Inventory/ItemDetailPanel/ItemDetailText.text = item_info
 		
+func item_equip():
+	if selected_equipment == "":
+		return
+	
+	var player_backpack = PlayerData.player_data["player_backpack"]
+	var player_item = PlayerData.player_data["player_item"]
+	
+	var item_id = selected_equipment_data["item_id"]
+	var item_name = selected_equipment_data["item_name"]
+	var item_type = selected_equipment_data["item_type"]
+	
+	
+	player_item[item_type] = item_name
+	player_backpack[item_type][item_id]["Status"] = "Equiped"
+	
+	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+	
+	get_tree().reload_current_scene()
+	
+	
+func save_data(save_slot: int, save_data: Dictionary):
+	PlayerData.player_data = save_data
+	var path = "user://test_save" + str(save_slot) + ".json"
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	var json_data = JSON.stringify(save_data)
+	file.store_string(json_data)
+	file.close()

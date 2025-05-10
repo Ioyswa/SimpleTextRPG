@@ -8,7 +8,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 50,
 					"Defense": 20
-				}
+				},
+				"Status": "Not Equip"
 			},
 		},
 		"Chestplate": {
@@ -17,7 +18,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 		"Legging": {
@@ -26,7 +28,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 		"Boots": {
@@ -35,16 +38,18 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
-		"Sword": {
+		"Weapon": {
 			0 : {
 				"Name" : "Wooden Sword",
 				"Stats" : {
 					"Attack" : 5,
 					"Str" : 20,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 	},
@@ -55,7 +60,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 50,
 					"Defense": 20
-				}
+				},
+				"Status": "Not Equip"
 			},
 		},
 		"Chestplate": {
@@ -64,7 +70,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 		"Legging": {
@@ -73,7 +80,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 		"Boots": {
@@ -82,16 +90,18 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
-		"Bow": {
+		"Weapon": {
 			0 : {
 				"Name" : "Wooden Bow",
 				"Stats" : {
 					"Attack" : 5,
 					"Str" : 20,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 	},
@@ -102,7 +112,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 50,
 					"Defense": 20
-				}
+				},
+				"Status": "Not Equip"
 			},
 		},
 		"Chestplate": {
@@ -111,7 +122,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 		"Legging": {
@@ -120,7 +132,8 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 		"Boots": {
@@ -129,16 +142,18 @@ var starter_gear = {
 				"Stats": {
 					"Health": 150,
 					"Defense": 50,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
-		"Staff": {
-			0 : {
+		"Weapon": {
+			1 : {
 				"Name" : "Wooden Staff",
 				"Stats" : {
 					"Attack" : 5,
 					"Str" : 20,
-				}
+				},
+				"Status": "Not Equip"
 			}
 		},
 	},
