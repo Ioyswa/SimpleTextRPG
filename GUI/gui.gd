@@ -6,9 +6,14 @@ var profile_showing := false
 var inventory_showing := false
 var profile_data_alr_show := false
 var inventory_data_alr_show := false
+var equipment_data_alr_show := false
 
-var selected_equipment : String
+var equipment_alr_count := false
+
+var equipment_count := 0
+
 var selected_equipment_data = {}
+var selected_unequip_item_data = {}
 
 @onready var inventory = $Content/ProfileAndInventory/Inventory/InventoryPanel/Inventory
 @onready var equip_button = $Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip
@@ -176,7 +181,25 @@ var dummy_armor_data = {
 }
 
 
+func save_data(save_slot: int, save_data: Dictionary):
+	PlayerData.player_data = save_data
+	var path = "user://test_save" + str(save_slot) + ".json"
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	var json_data = JSON.stringify(save_data)
+	file.store_string(json_data)
+	file.close()
 
+func _on_profile_pressed():
+	content_active = "Profile";
+	profile_showing = true
+	if content_active == "Profile" and profile_showing:
+			show_content(content_active)
+
+func _on_inven_pressed():
+	content_active = "Inventory"
+	inventory_showing = true
+	if content_active == "Inventory" and inventory_showing:
+		show_content(content_active)
 
 func _unhandled_key_input(event):
 	if event.is_action_pressed("open_profile"):
@@ -228,48 +251,54 @@ func show_inventory():
 	var player_backpack = PlayerData.player_data["player_backpack"]
 	
 	for item_type in player_backpack.keys():
-		for item_id in player_backpack[item_type].keys():
-			var item = player_backpack[item_type][item_id]
-			var item_status = item["Status"]
-			if item_status == "Not Equip":
-				var item_name = item["Name"]
-				var item_button = Button.new()
-				inventory.add_child(item_button)
-				item_button.text = item_name
-				
-				var item_stats = item["Stats"]
-				
-				for stats_name in item_stats.keys():
-					var stats_value = item_stats[stats_name]
-					item_button.mouse_entered.connect(show_item_info.bind(item_id, item_type, item_name, str(stats_value)))
-						
+		var item = player_backpack[item_type]
+		print(item["Status"])
+		var item_status = item["Status"]
+		if item_status == "Not Equip":
+			var item_name = item["Name"]
+			var item_button = Button.new()
+			inventory.add_child(item_button)
+			item_button.text = item_name
+			var item_stats = item["Stats"]
+			
+			for stats_name in item_stats.keys():
+				var stats_value = item_stats[stats_name]
+				item_button.mouse_entered.connect(show_item_info.bind(item_type, item_name, str(stats_value)))
+				item_button.pressed.connect(set_selected_equipment.bind(item_type, item_name, str(stats_value)))
 			
 	
 	
-	
-
 func get_equipment_data():
+	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.hide()
+	$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.show()
+	
 	if PlayerData.player_data == {}:
 		return
 	
 	var player_item = PlayerData.player_data["player_item"]
-	var player_helmet = player_item["Helmet"]
-	var player_chestplate = player_item["Chestplate"]
-	var player_legging = player_item["Legging"]
-	var player_boots = player_item["Boots"]
-	var player_weapon = player_item["Weapon"]
-		
+	var equipment_names = ["Helmet", "Chestplate", "Legging", "Boots", "Weapon"]
+	var equipment_count = 0
+
+	for equipment_name in equipment_names:
+		var equipment = player_item[equipment_name]
 	
-	if player_helmet == null: player_helmet = "None"
-	if player_chestplate == null: player_chestplate = "None"
-	if player_legging == null: player_legging = "None"
-	if player_boots == null: player_boots = "None"
-	if player_weapon == null: player_weapon = "None"
+		if equipment == null: 
+			equipment = "None"
+		else:
+			equipment_count += 1
 	
-	var equipment_text = "Helmet : " + player_helmet + "\nChestplate : " + player_chestplate + "\nLegging : " + player_legging + "\nBoots : " + player_boots + "\nWeapon : " + player_weapon
-	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = equipment_text
+		if equipment_data_alr_show == false:
+			var equipment_button = Button.new()
+			equipment_button.text = equipment_name + " : " + equipment
+			equipment_button.pressed.connect(set_selected_unequip_item.bind(equipment_name, equipment))
+			$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.add_child(equipment_button)
+
+	equipment_data_alr_show = true
 
 func get_profile_data():
+	$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.hide()
+	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.show()
+	
 	if PlayerData.player_data == {}:
 		return 
 	
@@ -283,39 +312,108 @@ func get_profile_data():
 	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = profile_text
 
 
-func show_item_info(item_id: String, item_type: String, item_name: String, item_stats: String):
-	var item_info = "Item id : " + item_id + "\nItem Type : " + item_type + "\nItem Name : " + item_name + "\nItem Stats : " + item_stats
-	selected_equipment = item_info
-	selected_equipment_data["item_id"] = item_id
+func set_selected_equipment(item_type: String, item_name: String, item_stats: String):
+	print(item_name)
 	selected_equipment_data["item_type"] = item_type
 	selected_equipment_data["item_name"] = item_name
 	selected_equipment_data["item_stats"] = item_stats
-	$Content/ProfileAndInventory/Inventory/ItemDetailPanel/ItemDetailText.text = item_info
+
 		
+
+func show_item_info(item_type: String, item_name: String, item_stats: String):
+	var item_info = "Item Type : " + item_type + "\nItem Name : " + item_name + "\nItem Stats : " + item_stats
+
+	$Content/ProfileAndInventory/Inventory/ItemDetailPanel/ItemDetailText.text = item_info
+
+func set_selected_unequip_item(item_type: String, item_name: String):
+	print(item_type)
+	selected_unequip_item_data["item_type"] = item_type
+	selected_unequip_item_data["item_name"] = item_name
+
+	
+	
+	
+	
+func item_unequip():
+	if selected_unequip_item_data == {}:
+		return
+		
+	var player_backpack = PlayerData.player_data["player_backpack"]
+	var player_item = PlayerData.player_data["player_item"]
+	
+	var item_name = selected_unequip_item_data["item_name"]
+	var item_type = selected_unequip_item_data["item_type"]
+	
+	player_item[item_type] = "None"
+	player_backpack[item_type]["Status"] = "Not Equip"
+	
+	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+	selected_unequip_item_data == {}
+	update_equipment()
+	update_backpack()
+
 func item_equip():
-	if selected_equipment == "":
+	if selected_equipment_data == {}:
 		return
 	
 	var player_backpack = PlayerData.player_data["player_backpack"]
 	var player_item = PlayerData.player_data["player_item"]
 	
-	var item_id = selected_equipment_data["item_id"]
 	var item_name = selected_equipment_data["item_name"]
 	var item_type = selected_equipment_data["item_type"]
 	
 	
 	player_item[item_type] = item_name
-	player_backpack[item_type][item_id]["Status"] = "Equiped"
+	player_backpack[item_type]["Status"] = "Equiped"
 	
 	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
 	
+	selected_equipment_data == {}
+	update_equipment()
+	update_backpack()
+	
+	
+	
+func update_backpack():
 	get_tree().reload_current_scene()
+	#var player_backpack = PlayerData.player_data["player_backpack"]
+	#
+	#for item_type in player_backpack.keys():
+		#var item = player_backpack[item_type]
+		#print(item["Status"])
+		#var item_status = item["Status"]
+		#if item_status == "Not Equip":
+			#var item_name = item["Name"]
+			#var item_button = Button.new()
+			#inventory.add_child(item_button)
+			#item_button.text = item_name
+			#var item_stats = item["Stats"]
+			#
+			#for stats_name in item_stats.keys():
+				#var stats_value = item_stats[stats_name]
+				#item_button.mouse_entered.connect(show_item_info.bind(item_type, item_name, str(stats_value)))
+				#
 	
+func update_equipment():
+	if PlayerData.player_data == {}:
+		return
 	
-func save_data(save_slot: int, save_data: Dictionary):
-	PlayerData.player_data = save_data
-	var path = "user://test_save" + str(save_slot) + ".json"
-	var file = FileAccess.open(path, FileAccess.WRITE)
-	var json_data = JSON.stringify(save_data)
-	file.store_string(json_data)
-	file.close()
+	var player_item = PlayerData.player_data["player_item"]
+	var equipment_names = ["Helmet", "Chestplate", "Legging", "Boots", "Weapon"]
+	var equipment_count = 0
+
+	for equipment_name in equipment_names:
+		var equipment = player_item[equipment_name]
+	
+		if equipment == null: 
+			equipment = "None"
+		else:
+			equipment_count += 1
+	
+		if equipment_data_alr_show == false:
+			var equipment_button = Button.new()
+			equipment_button.text = equipment_name + " : " + equipment
+			equipment_button.pressed.connect(set_selected_unequip_item.bind(equipment_name, equipment))
+			$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.add_child(equipment_button)
+
+	equipment_data_alr_show = true
