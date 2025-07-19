@@ -18,167 +18,6 @@ var selected_unequip_item_data = {}
 @onready var inventory = $Content/ProfileAndInventory/Inventory/InventoryPanel/Inventory
 @onready var equip_button = $Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip
 
-var dummy_weap_data = {
-	"Sword": {
-		0 : {
-			"Name" : "Wooden Sword",
-			"Stats" : {
-				"Attack" : 5,
-				"Str" : 20,
-			}
-		},
-		
-		1 : {
-			"Name" : "Stone Sword",
-			"Stats" : {
-				"Attack" : 15,
-				"Str" : 20,
-			}
-		},
-		
-		2 : {
-			"Name" : "Iron Sword",
-			"Stats" : {
-				"Attack" : 25,
-				"Str" : 20,
-			}
-		},
-		
-		3 : {
-			"Name" : "Sword Sword",
-			"Stats" : {
-				"Attack" : 55,
-				"Str" : 20,
-			}
-		},
-		
-		4 : {
-			"Name" : "Sword Sword God",
-			"Stats" : {
-				"Attack" : 5555,
-				"Str" : 20,
-			}
-		},
-	},
-	"Staff": {
-		0 : {
-			"Name" : "Wooden Staff",
-			"Stats" : {
-				"Attack" : 5,
-				"Int" : 20,
-			}
-		},
-		
-		1 : {
-			"Name" : "Stone Staff",
-			"Stats" : {
-				"Attack" : 15,
-				"Int" : 20,
-			}
-		},
-		
-		2 : {
-			"Name" : "Iron Staff",
-			"Stats" : {
-				"Attack" : 25,
-				"Int" : 20,
-			}
-		},
-		
-		3 : {
-			"Name" : "Staff Staff",
-			"Stats" : {
-				"Attack" : 55,
-				"Int" : 20,
-			}
-		},
-		
-		4 : {
-			"Name" : "Staff Staff God",
-			"Stats" : {
-				"Attack" : 5555,
-				"Int" : 20,
-			}
-		},
-	},
-	"Bow": {
-		0 : {
-			"Name" : "Wooden Bow",
-			"Stats" : {
-				"Attack" : 5,
-				"Agi" : 20,
-			}
-		},
-		
-		1 : {
-			"Name" : "Stone Bow",
-			"Stats" : {
-				"Attack" : 15,
-				"Agi" : 20,
-			}
-		},
-		
-		2 : {
-			"Name" : "Iron Bow",
-			"Stats" : {
-				"Attack" : 25,
-				"Agi" : 20,
-			}
-		},
-		
-		3 : {
-			"Name" : "Bow Bow",
-			"Stats" : {
-				"Attack" : 55,
-				"Agi" : 20,
-			}
-		},
-		
-		4 : {
-			"Name" : "Bow Bow God",
-			"Stats" : {
-				"Attack" : 5555,
-				"Agi" : 20,
-			}
-		},
-	},
-	
-}
-
-var dummy_armor_data = {
-	"Helmet": {
-		1: {
-			"Name": "Wooden Helmet",
-			"Stats": {
-				"Health": 50,
-				"Defense": 20
-			}
-		},
-		2: {
-			"Name": "Stone Helmet",
-			"Stats": {
-				"Health": 70,
-				"Defense": 30,
-			}
-		},
-	},
-	"Chestplate": {
-		1: {
-			"Name": "Wooden Chestplate",
-			"Stats": {
-				"Health": 150,
-				"Defense": 50,
-			}
-		},
-		2: {
-			"Name": "Stone Chestplate",
-			"Stats": {
-				"Health": 250,
-				"Defense": 100,
-			}
-		}
-	}
-}
 
 
 func save_data(save_slot: int, save_data: Dictionary):
@@ -189,6 +28,9 @@ func save_data(save_slot: int, save_data: Dictionary):
 	file.store_string(json_data)
 	file.close()
 
+func _on_main_pressed():
+	get_tree().change_scene_to_file("res://main_menu.tscn")
+	
 func _on_profile_pressed():
 	content_active = "Profile";
 	profile_showing = true
@@ -196,6 +38,7 @@ func _on_profile_pressed():
 			show_content(content_active)
 
 func _on_inven_pressed():
+	update_stats()
 	content_active = "Inventory"
 	inventory_showing = true
 	if content_active == "Inventory" and inventory_showing:
@@ -252,7 +95,6 @@ func show_inventory():
 	
 	for item_type in player_backpack.keys():
 		var item = player_backpack[item_type]
-		print(item["Status"])
 		var item_status = item["Status"]
 		if item_status == "Not Equip":
 			var item_name = item["Name"]
@@ -263,7 +105,7 @@ func show_inventory():
 			
 			for stats_name in item_stats.keys():
 				var stats_value = item_stats[stats_name]
-				item_button.mouse_entered.connect(show_item_info.bind(item_type, item_name, str(stats_value)))
+				item_button.mouse_entered.connect(show_item_info.bind(item_type, item_name, item_stats))
 				item_button.pressed.connect(set_selected_equipment.bind(item_type, item_name, str(stats_value)))
 			
 	
@@ -305,28 +147,42 @@ func get_profile_data():
 	var player_data = PlayerData.player_data
 	var player_name = player_data["player_name"]
 	var player_class = player_data["player_class"]
-	var player_class_stats = ClassData.class_list[player_class]["Stats"]
-	#print(player_class_stats)
-	var player_stats = "\n##Strength : " + str(player_class_stats["str"]) + "\n##Agility : " + str(player_class_stats["agi"])  + "\n##Intelligence : " + str(player_class_stats["int"])
+	
+	var current_player_stats = player_data["player_stats"]["Stats"]
+	
+	var player_stats = "\n##Strength : " + str(current_player_stats["Str"]) + "\n##Agility : " + str(current_player_stats["Agi"])  + "\n##Intelligence : " + str(current_player_stats["Int"]) + "\n##Health : " + str(current_player_stats["Health"]) + "\n##Defense : " + str(current_player_stats["Defense"])
+	
+	if "Attack" in current_player_stats:
+		player_stats += "\n##Attack : " + str(current_player_stats["Attack"])
+	
 	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats
 	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = profile_text
-
-
 func set_selected_equipment(item_type: String, item_name: String, item_stats: String):
-	print(item_name)
+	#print(item_name)
 	selected_equipment_data["item_type"] = item_type
 	selected_equipment_data["item_name"] = item_name
 	selected_equipment_data["item_stats"] = item_stats
 
 		
 
-func show_item_info(item_type: String, item_name: String, item_stats: String):
-	var item_info = "Item Type : " + item_type + "\nItem Name : " + item_name + "\nItem Stats : " + item_stats
+func show_item_info(item_type: String, item_name: String, item_stats: Dictionary):
+	var item: Dictionary
+	var num = 0
+	var stats_num
+	for stats_name in item_stats.keys():
+		num += 1
+		stats_num = "Stats" + str(num)
+		var stats = item_stats[stats_name]
+		item[stats_num] = stats_name + " : " + str(stats)
 
+	var stats1 = item["Stats1"]
+	var stats2 = item["Stats2"]
+	
+	var item_info = "Item Type : " + item_type + "\nItem Name : " + item_name + "\nItem Stats : \n" + stats1 + "\n" + stats2
 	$Content/ProfileAndInventory/Inventory/ItemDetailPanel/ItemDetailText.text = item_info
-
+	
 func set_selected_unequip_item(item_type: String, item_name: String):
-	print(item_type)
+
 	selected_unequip_item_data["item_type"] = item_type
 	selected_unequip_item_data["item_name"] = item_name
 
@@ -334,6 +190,27 @@ func set_selected_unequip_item(item_type: String, item_name: String):
 	
 	
 	
+func item_equip():
+	if selected_equipment_data == {}:
+		return
+	
+	var player_backpack = PlayerData.player_data["player_backpack"]
+	var player_item = PlayerData.player_data["player_item"]
+	
+	var item_name = selected_equipment_data["item_name"]
+	var item_type = selected_equipment_data["item_type"]
+	
+	player_item[item_type] = item_name
+	player_backpack[item_type]["Status"] = "Equiped"
+	
+	update_stats()
+	
+	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+	
+	selected_equipment_data = {}
+	
+	update_equipment()
+	update_backpack()
 func item_unequip():
 	if selected_unequip_item_data == {}:
 		return
@@ -347,73 +224,114 @@ func item_unequip():
 	player_item[item_type] = "None"
 	player_backpack[item_type]["Status"] = "Not Equip"
 	
-	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
-	selected_unequip_item_data == {}
-	update_equipment()
-	update_backpack()
-
-func item_equip():
-	if selected_equipment_data == {}:
-		return
-	
-	var player_backpack = PlayerData.player_data["player_backpack"]
-	var player_item = PlayerData.player_data["player_item"]
-	
-	var item_name = selected_equipment_data["item_name"]
-	var item_type = selected_equipment_data["item_type"]
-	
-	
-	player_item[item_type] = item_name
-	player_backpack[item_type]["Status"] = "Equiped"
+	update_stats()
 	
 	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
 	
-	selected_equipment_data == {}
+	selected_unequip_item_data = {} 
+	
 	update_equipment()
 	update_backpack()
-	
-	
 	
 func update_backpack():
-	get_tree().reload_current_scene()
-	#var player_backpack = PlayerData.player_data["player_backpack"]
-	#
-	#for item_type in player_backpack.keys():
-		#var item = player_backpack[item_type]
-		#print(item["Status"])
-		#var item_status = item["Status"]
-		#if item_status == "Not Equip":
-			#var item_name = item["Name"]
-			#var item_button = Button.new()
-			#inventory.add_child(item_button)
-			#item_button.text = item_name
-			#var item_stats = item["Stats"]
-			#
-			#for stats_name in item_stats.keys():
-				#var stats_value = item_stats[stats_name]
-				#item_button.mouse_entered.connect(show_item_info.bind(item_type, item_name, str(stats_value)))
-				#
+	clear_inventory_ui()
+	rebuild_inventory_ui()
+	if $Content/ProfileAndInventory/Profile.visible:
+		refresh_profile_stats()
+
+func clear_inventory_ui():
+	for child in inventory.get_children():
+		if child is Button:
+			child.queue_free()
+
+func rebuild_inventory_ui():
+	var player_backpack = PlayerData.player_data["player_backpack"]
 	
+	for item_type in player_backpack.keys():
+		var item = player_backpack[item_type]
+		var item_status = item["Status"]
+		if item_status == "Not Equip":
+			var item_name = item["Name"]
+			var item_button = Button.new()
+			inventory.add_child(item_button)
+			item_button.text = item_name
+			var item_stats = item["Stats"]
+			
+			for stats_name in item_stats.keys():
+				var stats_value = item_stats[stats_name]
+				item_button.mouse_entered.connect(show_item_info.bind(item_type, item_name, item_stats))
+				item_button.pressed.connect(set_selected_equipment.bind(item_type, item_name, str(stats_value)))
+
 func update_equipment():
+	clear_equipment_ui()
+	rebuild_equipment_ui()
+
+func clear_equipment_ui():
+	for child in $Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.get_children():
+		if child is Button:
+			child.queue_free()
+
+func rebuild_equipment_ui():
 	if PlayerData.player_data == {}:
 		return
 	
 	var player_item = PlayerData.player_data["player_item"]
 	var equipment_names = ["Helmet", "Chestplate", "Legging", "Boots", "Weapon"]
-	var equipment_count = 0
 
 	for equipment_name in equipment_names:
 		var equipment = player_item[equipment_name]
 	
-		if equipment == null: 
+		if equipment == null or equipment == "None": 
 			equipment = "None"
-		else:
-			equipment_count += 1
 	
-		if equipment_data_alr_show == false:
-			var equipment_button = Button.new()
-			equipment_button.text = equipment_name + " : " + equipment
-			equipment_button.pressed.connect(set_selected_unequip_item.bind(equipment_name, equipment))
-			$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.add_child(equipment_button)
+		var equipment_button = Button.new()
+		equipment_button.text = equipment_name + " : " + str(equipment)
+		equipment_button.pressed.connect(set_selected_unequip_item.bind(equipment_name, equipment))
+		$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.add_child(equipment_button)
 
-	equipment_data_alr_show = true
+func refresh_profile_stats():
+	if $Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.visible:
+		get_profile_data()
+
+func update_stats():
+	var equiped_item = {}
+	var player_data = PlayerData.player_data
+	var player_backpack = player_data["player_backpack"]
+	var player_stats = player_data["player_stats"]
+	var player_class = player_data["player_class"]
+	
+	var base_class_stats = ClassData.class_list[player_class]["Stats"]
+	print("Base stats: ", base_class_stats)
+	
+	var equipment_bonuses = {
+		"Health": 0.0,
+		"Defense": 0.0,
+		"Attack": 0.0,
+		"Str": 0.0,
+		"Agi": 0.0,
+		"Int": 0.0
+	}
+	
+	for item_type in player_backpack.keys():
+		var item = player_backpack[item_type]
+		if item["Status"] == "Equiped":
+			print("Equipped item: ", item_type, " - ", item["Name"])
+			equiped_item[item_type] = {
+				"Item Name": item["Name"],
+				"Item Stats": item["Stats"]
+			}
+			var item_stats = equiped_item[item_type]["Item Stats"]
+			for stats_name in item_stats.keys():
+				if stats_name in equipment_bonuses:
+					equipment_bonuses[stats_name] += item_stats[stats_name]
+	
+	print("Equipment bonuses: ", equipment_bonuses)
+	
+	for stats_name in base_class_stats.keys():
+		player_stats["Stats"][stats_name] = base_class_stats[stats_name] + equipment_bonuses.get(stats_name, 0.0)
+	
+
+	if "Attack" not in base_class_stats and equipment_bonuses["Attack"] > 0:
+		player_stats["Stats"]["Attack"] = equipment_bonuses["Attack"]
+	
+	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)

@@ -208,6 +208,7 @@ offset_top = -32.0
 offset_bottom = 32.0
 grow_horizontal = 0
 grow_vertical = 2
+text = "Unequip"
 
 [node name="ItemDetailPanel" type="Panel" parent="Content/ProfileAndInventory/Inventory"]
 layout_mode = 0
@@ -223,6 +224,7 @@ offset_bottom = 128.0
 
 [connection signal="pressed" from="BottomBar/Inven" to="." method="_on_inven_pressed"]
 [connection signal="pressed" from="TopBar/Profile" to="." method="_on_profile_pressed"]
+[connection signal="pressed" from="TopBar/Main" to="." method="_on_main_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Stats" to="." method="_on_stats_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Equipment" to="." method="_on_equipment_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip" to="." method="item_equip"]

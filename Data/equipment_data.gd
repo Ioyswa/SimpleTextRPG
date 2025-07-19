@@ -98,7 +98,7 @@ var starter_gear = {
 				"Name" : "Wooden Bow",
 				"Stats" : {
 					"Attack" : 5,
-					"Str" : 20,
+					"Agi" : 20,
 				},
 				"Status": "Not Equip"
 			
@@ -150,7 +150,7 @@ var starter_gear = {
 				"Name" : "Wooden Staff",
 				"Stats" : {
 					"Attack" : 5,
-					"Str" : 20,
+					"Int" : 20,
 				},
 				"Status": "Not Equip"
 			

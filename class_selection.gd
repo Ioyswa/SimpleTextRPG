@@ -27,7 +27,7 @@ func get_class_info(name_of_class: String) -> String:
 	
 	
 	
-	var class_label_text = "Strength: " + str(stats["str"]) + "\n" + "Agility: " + str(stats["agi"]) + "\n" + "Intelligence: " + str(stats["int"]) + "\n" + "Weapon: " + class_data["Weapon"]
+	var class_label_text = "Strength: " + str(stats["Str"]) + "\n" + "Agility: " + str(stats["Agi"]) + "\n" + "Intelligence: " + str(stats["Int"]) + "\n" + "Weapon: " + class_data["Weapon"]
 	
 	return class_label_text
 	
