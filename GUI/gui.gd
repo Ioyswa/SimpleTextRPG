@@ -4,6 +4,7 @@ var content_active: String
 
 var profile_showing := false
 var inventory_showing := false
+var dungeon_showing := false
 var profile_data_alr_show := false
 var inventory_data_alr_show := false
 var equipment_data_alr_show := false
@@ -35,13 +36,19 @@ func _on_profile_pressed():
 	content_active = "Profile";
 	profile_showing = true
 	if content_active == "Profile" and profile_showing:
-			show_content(content_active)
+		show_content(content_active)
 
 func _on_inven_pressed():
 	update_stats()
 	content_active = "Inventory"
 	inventory_showing = true
 	if content_active == "Inventory" and inventory_showing:
+		show_content(content_active)
+
+func _on_dungeon_pressed():
+	content_active = "Dungeon"
+	dungeon_showing = true
+	if content_active == "Dungeon" and dungeon_showing:
 		show_content(content_active)
 
 func _unhandled_key_input(event):
@@ -60,15 +67,24 @@ func show_content(content_name: String):
 	match content_name:
 		"Profile":
 			show_profile()
+			$Content/Dungeon.visible = false
 		"Inventory":
 			show_inventory()
+			$Content/Dungeon.visible = false
+		"Dungeon":
+			$Content/ProfileAndInventory/Inventory.visible = false
+			$Content/ProfileAndInventory/Profile.visible = false
+			show_dungeon()
 		
 		
+func show_dungeon():
+	$Content/Dungeon.visible = !$Content/Dungeon.visible
 
 func show_equipment():
 	get_equipment_data()
 
 func show_profile():
+	
 	$Content/ProfileAndInventory/Profile.visible = !$Content/ProfileAndInventory/Profile.visible
 	get_profile_data()
 	profile_data_alr_show = true
@@ -101,7 +117,7 @@ func show_inventory():
 			var item_button = Button.new()
 			inventory.add_child(item_button)
 			item_button.text = item_name
-			var item_stats = item["Stats"]
+			var item_stats = item
 			
 			for stats_name in item_stats.keys():
 				var stats_value = item_stats[stats_name]
@@ -148,17 +164,18 @@ func get_profile_data():
 	var player_name = player_data["player_name"]
 	var player_class = player_data["player_class"]
 	
-	var current_player_stats = player_data["player_stats"]["Stats"]
+	var current_player_stats = player_data["player_stats"]
 	
 	var player_stats = "\n##Strength : " + str(current_player_stats["Str"]) + "\n##Agility : " + str(current_player_stats["Agi"])  + "\n##Intelligence : " + str(current_player_stats["Int"]) + "\n##Health : " + str(current_player_stats["Health"]) + "\n##Defense : " + str(current_player_stats["Defense"])
 	
 	if "Attack" in current_player_stats:
 		player_stats += "\n##Attack : " + str(current_player_stats["Attack"])
 	
+	player_stats += "\n##Exp : " + str(current_player_stats["Experience"])
+	
 	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats
 	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = profile_text
 func set_selected_equipment(item_type: String, item_name: String, item_stats: String):
-	#print(item_name)
 	selected_equipment_data["item_type"] = item_type
 	selected_equipment_data["item_name"] = item_name
 	selected_equipment_data["item_stats"] = item_stats
@@ -255,7 +272,7 @@ func rebuild_inventory_ui():
 			var item_button = Button.new()
 			inventory.add_child(item_button)
 			item_button.text = item_name
-			var item_stats = item["Stats"]
+			var item_stats = item
 			
 			for stats_name in item_stats.keys():
 				var stats_value = item_stats[stats_name]
@@ -301,7 +318,6 @@ func update_stats():
 	var player_class = player_data["player_class"]
 	
 	var base_class_stats = ClassData.class_list[player_class]["Stats"]
-	print("Base stats: ", base_class_stats)
 	
 	var equipment_bonuses = {
 		"Health": 0.0,
@@ -315,23 +331,33 @@ func update_stats():
 	for item_type in player_backpack.keys():
 		var item = player_backpack[item_type]
 		if item["Status"] == "Equiped":
-			print("Equipped item: ", item_type, " - ", item["Name"])
+			
 			equiped_item[item_type] = {
 				"Item Name": item["Name"],
-				"Item Stats": item["Stats"]
+				"Item Stats": item
 			}
-			var item_stats = equiped_item[item_type]["Item Stats"]
+			var item_stats = equiped_item[item_type]["Item Stats"]["Stats"]
+			#print(item_stats)
+		
 			for stats_name in item_stats.keys():
+				#print(stats_name)
+				#print(equipment_bonuses)
 				if stats_name in equipment_bonuses:
 					equipment_bonuses[stats_name] += item_stats[stats_name]
 	
-	print("Equipment bonuses: ", equipment_bonuses)
 	
 	for stats_name in base_class_stats.keys():
-		player_stats["Stats"][stats_name] = base_class_stats[stats_name] + equipment_bonuses.get(stats_name, 0.0)
+		#pass
+		#print(base_class_stats[stats_name])
+		#print(equipment_bonuses.get(stats_name))
+		player_stats[stats_name] = base_class_stats[stats_name] + equipment_bonuses.get(stats_name, 0.0)
 	
 
 	if "Attack" not in base_class_stats and equipment_bonuses["Attack"] > 0:
-		player_stats["Stats"]["Attack"] = equipment_bonuses["Attack"]
+		player_stats["Attack"] = equipment_bonuses["Attack"]
 	
 	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+
+
+func _on_button_pressed():
+	pass # Replace with function body.

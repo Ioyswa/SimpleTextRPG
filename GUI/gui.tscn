@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dy2s3bub8hwfp"]
+[gd_scene load_steps=5 format=3 uid="uid://dy2s3bub8hwfp"]
 
 [ext_resource type="Script" uid="uid://negt1n1c65d1" path="res://GUI/gui.gd" id="1_3w8el"]
+[ext_resource type="Script" uid="uid://bbukrp27hb30y" path="res://GUI/dungeon.gd" id="2_egdk1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3w8el"]
 bg_color = Color(0.202077, 0.149073, 0.12129, 1)
@@ -29,13 +30,9 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="Inven" type="Button" parent="BottomBar"]
+[node name="Dungeon" type="Button" parent="BottomBar"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Inventory"
-
-[node name="Button" type="Button" parent="BottomBar"]
-layout_mode = 2
+text = "Dungeon"
 
 [node name="TopBar" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -61,6 +58,11 @@ text = "Main Menu"
 visible = false
 layout_mode = 2
 
+[node name="Inven" type="Button" parent="TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Inventory"
+
 [node name="Content" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -77,11 +79,11 @@ grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="Content"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -8.0
-offset_bottom = -8.0
+anchors_preset = -1
+anchor_right = 0.993
+anchor_bottom = 0.986
+offset_right = -0.384033
+offset_bottom = 0.175964
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -174,10 +176,6 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 3
 
-[node name="Button" type="Button" parent="Content/ProfileAndInventory/Inventory/InventoryPanel/Inventory"]
-layout_mode = 2
-text = "Test"
-
 [node name="InventoryActionPanel" type="Panel" parent="Content/ProfileAndInventory/Inventory/InventoryPanel"]
 layout_mode = 2
 offset_top = 320.0
@@ -222,10 +220,61 @@ layout_mode = 0
 offset_right = 320.0
 offset_bottom = 128.0
 
-[connection signal="pressed" from="BottomBar/Inven" to="." method="_on_inven_pressed"]
+[node name="Dungeon" type="Control" parent="Content"]
+layout_mode = 1
+anchor_right = 0.993
+anchor_bottom = 1.0
+offset_right = -0.384033
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_egdk1")
+
+[node name="Button" type="Button" parent="Content/Dungeon"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Add Exp
+"
+
+[node name="DungeonList" type="VBoxContainer" parent="Content/Dungeon"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 320.0
+grow_vertical = 2
+
+[node name="Button2" type="Button" parent="Content/Dungeon/DungeonList"]
+layout_mode = 2
+
+[node name="MonsterList" type="HBoxContainer" parent="Content/Dungeon"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.993
+anchor_right = 0.993
+offset_left = -752.44
+offset_right = 7.55994
+offset_bottom = 384.0
+grow_horizontal = 0
+
+[node name="Button" type="Button" parent="Content/Dungeon/MonsterList"]
+layout_mode = 2
+
+[connection signal="pressed" from="BottomBar/Dungeon" to="." method="_on_dungeon_pressed"]
 [connection signal="pressed" from="TopBar/Profile" to="." method="_on_profile_pressed"]
 [connection signal="pressed" from="TopBar/Main" to="." method="_on_main_pressed"]
+[connection signal="pressed" from="TopBar/Inven" to="." method="_on_inven_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Stats" to="." method="_on_stats_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Equipment" to="." method="_on_equipment_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip" to="." method="item_equip"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Unequip" to="." method="item_unequip"]
+[connection signal="pressed" from="Content/Dungeon/Button" to="Content/Dungeon" method="_on_button_pressed"]
+[connection signal="pressed" from="Content/Dungeon/DungeonList/Button2" to="Content/Dungeon" method="_on_button_2_pressed"]
