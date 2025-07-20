@@ -358,6 +358,6 @@ func update_stats():
 	
 	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
 
-
-func _on_button_pressed():
-	pass # Replace with function body.
+func get_dungeon_reward(dungeon_reward: Dictionary):
+	
+	print(dungeon_reward)
