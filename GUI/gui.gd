@@ -1,5 +1,8 @@
 extends Control
 
+
+var save_slot = PlayerData.player_data["save_slot"]
+
 var content_active: String
 
 var profile_showing := false
@@ -107,10 +110,10 @@ func show_inventory():
 	var connected = false
 	
 
-	var player_backpack = PlayerData.player_data["player_backpack"]
+	var player_inventory = PlayerData.player_data["player_inventory"]
 	
-	for item_type in player_backpack.keys():
-		var item = player_backpack[item_type]
+	for item_type in player_inventory.keys():
+		var item = player_inventory[item_type]
 		var item_status = item["Status"]
 		if item_status == "Not Equip":
 			var item_name = item["Name"]
@@ -133,12 +136,12 @@ func get_equipment_data():
 	if PlayerData.player_data == {}:
 		return
 	
-	var player_item = PlayerData.player_data["player_item"]
+	var player_equipment = PlayerData.player_data["player_equipment"]
 	var equipment_names = ["Helmet", "Chestplate", "Legging", "Boots", "Weapon"]
 	var equipment_count = 0
 
 	for equipment_name in equipment_names:
-		var equipment = player_item[equipment_name]
+		var equipment = player_equipment[equipment_name]
 	
 		if equipment == null: 
 			equipment = "None"
@@ -211,18 +214,18 @@ func item_equip():
 	if selected_equipment_data == {}:
 		return
 	
-	var player_backpack = PlayerData.player_data["player_backpack"]
-	var player_item = PlayerData.player_data["player_item"]
+	var player_inventory = PlayerData.player_data["player_inventory"]
+	var player_equipment = PlayerData.player_data["player_equipment"]
 	
 	var item_name = selected_equipment_data["item_name"]
 	var item_type = selected_equipment_data["item_type"]
 	
-	player_item[item_type] = item_name
-	player_backpack[item_type]["Status"] = "Equiped"
+	player_equipment[item_type] = item_name
+	player_inventory[item_type]["Status"] = "Equiped"
 	
 	update_stats()
 	
-	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+	save_data(save_slot, PlayerData.player_data)
 	
 	selected_equipment_data = {}
 	
@@ -232,18 +235,18 @@ func item_unequip():
 	if selected_unequip_item_data == {}:
 		return
 		
-	var player_backpack = PlayerData.player_data["player_backpack"]
-	var player_item = PlayerData.player_data["player_item"]
+	var player_inventory = PlayerData.player_data["player_inventory"]
+	var player_equipment = PlayerData.player_data["player_equipment"]
 	
 	var item_name = selected_unequip_item_data["item_name"]
 	var item_type = selected_unequip_item_data["item_type"]
 	
-	player_item[item_type] = "None"
-	player_backpack[item_type]["Status"] = "Not Equip"
+	player_equipment[item_type] = "None"
+	player_inventory[item_type]["Status"] = "Not Equip"
 	
 	update_stats()
 	
-	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+	save_data(save_slot, PlayerData.player_data)
 	
 	selected_unequip_item_data = {} 
 	
@@ -262,10 +265,10 @@ func clear_inventory_ui():
 			child.queue_free()
 
 func rebuild_inventory_ui():
-	var player_backpack = PlayerData.player_data["player_backpack"]
+	var player_inventory = PlayerData.player_data["player_inventory"]
 	
-	for item_type in player_backpack.keys():
-		var item = player_backpack[item_type]
+	for item_type in player_inventory.keys():
+		var item = player_inventory[item_type]
 		var item_status = item["Status"]
 		if item_status == "Not Equip":
 			var item_name = item["Name"]
@@ -292,11 +295,11 @@ func rebuild_equipment_ui():
 	if PlayerData.player_data == {}:
 		return
 	
-	var player_item = PlayerData.player_data["player_item"]
+	var player_equipment = PlayerData.player_data["player_equipment"]
 	var equipment_names = ["Helmet", "Chestplate", "Legging", "Boots", "Weapon"]
 
 	for equipment_name in equipment_names:
-		var equipment = player_item[equipment_name]
+		var equipment = player_equipment[equipment_name]
 	
 		if equipment == null or equipment == "None": 
 			equipment = "None"
@@ -313,7 +316,7 @@ func refresh_profile_stats():
 func update_stats():
 	var equiped_item = {}
 	var player_data = PlayerData.player_data
-	var player_backpack = player_data["player_backpack"]
+	var player_inventory = player_data["player_inventory"]
 	var player_stats = player_data["player_stats"]
 	var player_class = player_data["player_class"]
 	
@@ -328,8 +331,8 @@ func update_stats():
 		"Int": 0.0
 	}
 	
-	for item_type in player_backpack.keys():
-		var item = player_backpack[item_type]
+	for item_type in player_inventory.keys():
+		var item = player_inventory[item_type]
 		if item["Status"] == "Equiped":
 			
 			equiped_item[item_type] = {
@@ -345,7 +348,6 @@ func update_stats():
 				if stats_name in equipment_bonuses:
 					equipment_bonuses[stats_name] += item_stats[stats_name]
 	
-	
 	for stats_name in base_class_stats.keys():
 		#pass
 		#print(base_class_stats[stats_name])
@@ -356,8 +358,27 @@ func update_stats():
 	if "Attack" not in base_class_stats and equipment_bonuses["Attack"] > 0:
 		player_stats["Attack"] = equipment_bonuses["Attack"]
 	
-	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
+	save_data(save_slot, PlayerData.player_data)
 
 func get_dungeon_reward(dungeon_reward: Dictionary):
+	var player_backpack = PlayerData.player_data["player_backpack"]
 	
-	print(dungeon_reward)
+	if "item" in dungeon_reward and dungeon_reward["item"].size() > 0:
+		for item_name in dungeon_reward["item"].keys():
+			var item_quantity = dungeon_reward["item"][item_name]
+			if item_name in player_backpack.keys():
+				player_backpack[item_name] += item_quantity
+			else:
+				player_backpack[item_name] = item_quantity
+		#print(PlayerData.player_data["player_backpack"])
+	#
+	#
+	if "exp" in dungeon_reward and dungeon_reward["exp"] > 0:
+		PlayerData.player_data["player_stats"]["Experience"] += dungeon_reward["exp"]
+		#print()
+	
+	if "gold" in dungeon_reward and dungeon_reward["gold"] > 0:
+		PlayerData.player_data["player_gold"] += dungeon_reward["gold"]
+		
+	print(PlayerData.player_data)
+	save_data(save_slot, PlayerData.player_data)

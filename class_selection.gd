@@ -43,8 +43,11 @@ func save_data(save_slot: int, save_data: Dictionary):
 func set_player_class(name_of_class: String):
 	PlayerData.player_data["player_class"] = name_of_class
 	PlayerData.player_data["player_stats"] = set_player_stats(name_of_class)
-	PlayerData.player_data["player_backpack"] = set_player_starter_gear(name_of_class)
-	PlayerData.player_data["player_item"] = set_player_equiped_item()
+	PlayerData.player_data["player_backpack"] = {}
+	PlayerData.player_data["player_inventory"] = set_player_starter_gear(name_of_class)
+	PlayerData.player_data["player_equipment"] = set_player_equiped_equipment()
+	PlayerData.player_data["player_gold"] = 0.0
+	
 	
 	#print(PlayerData.player_data)
 	save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
@@ -78,7 +81,7 @@ func set_player_starter_gear(name_of_class: String) -> Dictionary:
 	return player_gear
 
 
-func set_player_equiped_item() -> Dictionary:
+func set_player_equiped_equipment() -> Dictionary:
 	var player_equiped = {
 		"Helmet": null,
 		"Chestplate": null,
