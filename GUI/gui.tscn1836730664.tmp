@@ -1,0 +1,155 @@
+[gd_scene load_steps=4 format=3 uid="uid://dy2s3bub8hwfp"]
+
+[ext_resource type="Script" uid="uid://negt1n1c65d1" path="res://GUI/gui.gd" id="1_3w8el"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3w8el"]
+bg_color = Color(0.202077, 0.149073, 0.12129, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_egdk1"]
+bg_color = Color(0.191703, 0.23429, 0.120985, 1)
+
+[node name="GUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3w8el")
+
+[node name="BottomBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Main" type="Button" parent="BottomBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Main Menu"
+
+[node name="Inven" type="Button" parent="BottomBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Inventory"
+
+[node name="Button" type="Button" parent="BottomBar"]
+layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+alignment = 2
+
+[node name="Profile" type="Button" parent="TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Profile"
+
+[node name="Button" type="Button" parent="TopBar"]
+visible = false
+layout_mode = 2
+
+[node name="Content" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -292.0
+offset_right = 480.0
+offset_bottom = 292.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 4.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProfileAndInventory" type="Control" parent="Content"]
+layout_mode = 1
+anchor_left = 0.133
+anchor_top = 0.5
+anchor_right = 0.133
+anchor_bottom = 0.5
+offset_left = 4.32
+offset_top = -232.0
+offset_right = 708.32
+offset_bottom = 216.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProfilePanel" type="Panel" parent="Content/ProfileAndInventory"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 1.0
+offset_top = -224.0
+offset_right = 321.0
+offset_bottom = 224.0
+grow_vertical = 2
+
+[node name="ProfileText" type="Label" parent="Content/ProfileAndInventory/ProfilePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "test"
+
+[node name="InventoryPanel" type="Panel" parent="Content/ProfileAndInventory"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -384.0
+offset_top = -224.0
+offset_bottom = 224.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3w8el")
+
+[node name="Inventory" type="GridContainer" parent="Content/ProfileAndInventory/InventoryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="Button" type="Button" parent="Content/ProfileAndInventory/InventoryPanel/Inventory"]
+layout_mode = 2
+text = "Test"
+
+[node name="ItemDetailPanel" type="Panel" parent="Content/ProfileAndInventory"]
+layout_mode = 0
+offset_top = 320.0
+offset_right = 320.0
+offset_bottom = 448.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_egdk1")
+
+[node name="ItemDetailText" type="Label" parent="Content/ProfileAndInventory/ItemDetailPanel"]
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 128.0

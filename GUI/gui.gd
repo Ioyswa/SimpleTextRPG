@@ -340,18 +340,12 @@ func update_stats():
 				"Item Stats": item
 			}
 			var item_stats = equiped_item[item_type]["Item Stats"]["Stats"]
-			#print(item_stats)
 		
 			for stats_name in item_stats.keys():
-				#print(stats_name)
-				#print(equipment_bonuses)
 				if stats_name in equipment_bonuses:
 					equipment_bonuses[stats_name] += item_stats[stats_name]
 	
 	for stats_name in base_class_stats.keys():
-		#pass
-		#print(base_class_stats[stats_name])
-		#print(equipment_bonuses.get(stats_name))
 		player_stats[stats_name] = base_class_stats[stats_name] + equipment_bonuses.get(stats_name, 0.0)
 	
 
@@ -370,12 +364,9 @@ func get_dungeon_reward(dungeon_reward: Dictionary):
 				player_backpack[item_name] += item_quantity
 			else:
 				player_backpack[item_name] = item_quantity
-		#print(PlayerData.player_data["player_backpack"])
-	#
-	#
+
 	if "exp" in dungeon_reward and dungeon_reward["exp"] > 0:
 		PlayerData.player_data["player_stats"]["Experience"] += dungeon_reward["exp"]
-		#print()
 	
 	if "gold" in dungeon_reward and dungeon_reward["gold"] > 0:
 		PlayerData.player_data["player_gold"] += dungeon_reward["gold"]
