@@ -66,7 +66,7 @@ func show_dungeon_content(dungeon_name: String):
 				type = "monster"
 				var button = Button.new()
 				button.text = monster_name
-				button.mouse_entered.connect(show_action_and_info.bind(monster_list[monster_name], type, monster_name, dungeon_name))
+				button.pressed.connect(show_action_and_info.bind(monster_list[monster_name], type, monster_name, dungeon_name))
 				button.pressed.connect(set_button_data.bind(type, monster_name, dungeon_name))
 				$MonsterList.add_child(button)
 			
@@ -74,7 +74,7 @@ func show_dungeon_content(dungeon_name: String):
 				type = "env"
 				var button = Button.new()
 				button.text = env_name
-				button.mouse_entered.connect(show_action_and_info.bind(env_list[env_name], type, env_name, dungeon_name))
+				button.pressed.connect(show_action_and_info.bind(env_list[env_name], type, env_name, dungeon_name))
 				button.pressed.connect(set_button_data.bind(type, env_name, dungeon_name))
 				$EnvList.add_child(button)
 			
@@ -94,16 +94,22 @@ func show_action_and_info(information: Dictionary, type: String, obj_name: Strin
 
 	var info_text = ""
 	var obj_info = DungeonData.dungeon_data[dungeon_name][type + "_list"][obj_name]
+	#print(obj_info)
 	var obj_stats = {}
+	
 	if "stats" in obj_info:
 		obj_stats = obj_info["stats"]
+		info_text += "##Stats \n"
 	
 	var obj_drop_list = obj_info["drop_list"]
 	if "Health" in obj_stats.keys() and obj_stats != {}:
-		info_text += "#Health" + str(obj_stats["Health"]) + "\n"
+		info_text += "#Health" + str(obj_stats["Health"]) + "\n\n\n"
 
 	for drop_name in obj_drop_list.keys():
-		pass
+		var drop_range = [obj_drop_list[drop_name]["min"], obj_drop_list[drop_name]["max"]]
+		var drop_chance = obj_drop_list[drop_name]["chance"]
+		var new_drop_name = drop_name.replace("_", " ").capitalize()
+		info_text += new_drop_name + " drop From " + str(drop_range[0]) + " To " + str(drop_range[1]) + "\n"
 
 	$InformationPanel/InformationLabel.text = info_text
 

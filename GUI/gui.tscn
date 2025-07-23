@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dy2s3bub8hwfp"]
+[gd_scene load_steps=9 format=3 uid="uid://dy2s3bub8hwfp"]
 
 [ext_resource type="Script" uid="uid://negt1n1c65d1" path="res://GUI/gui.gd" id="1_3w8el"]
 [ext_resource type="Script" uid="uid://bbukrp27hb30y" path="res://GUI/dungeon.gd" id="2_egdk1"]
+[ext_resource type="Script" uid="uid://drjwdd43iseiw" path="res://GUI/backpack.gd" id="3_x71ey"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3w8el"]
 bg_color = Color(0.202077, 0.149073, 0.12129, 1)
@@ -14,6 +15,9 @@ bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtfhu"]
 bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xed4"]
+bg_color = Color(0.152542, 0.384616, 0.278074, 1)
 
 [node name="GUI" type="Control"]
 layout_mode = 3
@@ -38,6 +42,7 @@ alignment = 1
 
 [node name="Dungeon" type="Button" parent="BottomBar"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "Dungeon"
 
 [node name="TopBar" type="HBoxContainer" parent="."]
@@ -52,22 +57,18 @@ alignment = 1
 
 [node name="Profile" type="Button" parent="TopBar"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 28
 text = "Profile"
-
-[node name="Main" type="Button" parent="TopBar"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Main Menu"
-
-[node name="Button" type="Button" parent="TopBar"]
-visible = false
-layout_mode = 2
 
 [node name="Inven" type="Button" parent="TopBar"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 text = "Inventory"
+
+[node name="Backpack" type="Button" parent="TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Backpack"
 
 [node name="Content" type="Control" parent="."]
 layout_mode = 1
@@ -227,6 +228,7 @@ offset_right = 320.0
 offset_bottom = 128.0
 
 [node name="Dungeon" type="Control" parent="Content"]
+visible = false
 layout_mode = 1
 anchor_right = 0.993
 anchor_bottom = 1.0
@@ -359,10 +361,51 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Backpack" type="Control" parent="Content"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -592.0
+offset_top = -232.0
+offset_right = -152.0
+offset_bottom = 216.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("3_x71ey")
+
+[node name="BackpackPanel" type="Panel" parent="Content/Backpack"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2xed4")
+
+[node name="BackpackLabel" type="Label" parent="Content/Backpack/BackpackPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "test"
+
+[node name="Main" type="Button" parent="."]
+layout_mode = 2
+offset_top = 8.0
+offset_right = 139.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 24
+text = "Main Menu"
+
 [connection signal="pressed" from="BottomBar/Dungeon" to="." method="_on_dungeon_pressed"]
 [connection signal="pressed" from="TopBar/Profile" to="." method="_on_profile_pressed"]
-[connection signal="pressed" from="TopBar/Main" to="." method="_on_main_pressed"]
 [connection signal="pressed" from="TopBar/Inven" to="." method="_on_inven_pressed"]
+[connection signal="pressed" from="TopBar/Backpack" to="." method="_on_backpack_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Stats" to="." method="_on_stats_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Equipment" to="." method="_on_equipment_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip" to="." method="item_equip"]
@@ -370,3 +413,4 @@ grow_vertical = 2
 [connection signal="pressed" from="Content/Dungeon/Button" to="Content/Dungeon" method="_on_button_pressed"]
 [connection signal="pressed" from="Content/Dungeon/ShowReward/CloseReward" to="Content/Dungeon" method="_on_close_reward_pressed"]
 [connection signal="pressed" from="Content/Dungeon/ActionPanel/ActionButton" to="Content/Dungeon" method="_on_action_button_pressed"]
+[connection signal="pressed" from="Main" to="." method="_on_main_pressed"]

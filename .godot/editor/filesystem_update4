@@ -1,11 +1,7 @@
 res://GUI/gui.tscn
-res://readme.md
-res://GUI/dungeon.gd
 res://main_menu.tscn
 res://class_selection.tscn
 res://save_menu.tscn
 res://Scene/main.tscn
 res://GUI/gui.gd
-res://class_selection.gd
-res://Data/class_data.gd
-res://Data/dungeon_data.gd
+res://GUI/backpack.gd

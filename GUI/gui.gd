@@ -8,6 +8,7 @@ var content_active: String
 var profile_showing := false
 var inventory_showing := false
 var dungeon_showing := false
+var backpack_showing := false
 var profile_data_alr_show := false
 var inventory_data_alr_show := false
 var equipment_data_alr_show := false
@@ -54,6 +55,14 @@ func _on_dungeon_pressed():
 	if content_active == "Dungeon" and dungeon_showing:
 		show_content(content_active)
 
+
+func _on_backpack_pressed():
+	content_active = "Backpack"
+	backpack_showing = true
+	if content_active == "Backpack" and backpack_showing:
+		show_content(content_active)
+
+
 func _unhandled_key_input(event):
 	if event.is_action_pressed("open_profile"):
 		content_active = "Profile"
@@ -69,25 +78,33 @@ func _unhandled_key_input(event):
 func show_content(content_name: String):
 	match content_name:
 		"Profile":
+			$Content/Dungeon.visible = false
 			show_profile()
-			$Content/Dungeon.visible = false
 		"Inventory":
-			show_inventory()
 			$Content/Dungeon.visible = false
+			$Content/Backpack.visible = false
+			show_inventory()
 		"Dungeon":
 			$Content/ProfileAndInventory/Inventory.visible = false
 			$Content/ProfileAndInventory/Profile.visible = false
+			$Content/Backpack.visible = false
 			show_dungeon()
+		"Backpack":
+			$Content/Dungeon.visible = false
+			$Content/ProfileAndInventory/Inventory.visible = false
+			show_backpack()
 		
 		
 func show_dungeon():
 	$Content/Dungeon.visible = !$Content/Dungeon.visible
 
+func show_backpack():
+	$Content/Backpack.visible = !$Content/Backpack.visible
+
 func show_equipment():
 	get_equipment_data()
 
 func show_profile():
-	
 	$Content/ProfileAndInventory/Profile.visible = !$Content/ProfileAndInventory/Profile.visible
 	get_profile_data()
 	profile_data_alr_show = true
