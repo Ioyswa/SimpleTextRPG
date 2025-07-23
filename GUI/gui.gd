@@ -168,22 +168,20 @@ func get_profile_data():
 	var player_class = player_data["player_class"]
 	
 	var current_player_stats = player_data["player_stats"]
+	var current_player_exp = str(player_data["player_exp"])
+	var current_player_gold = str(player_data["player_gold"])
 	
 	var player_stats = "\n##Strength : " + str(current_player_stats["Str"]) + "\n##Agility : " + str(current_player_stats["Agi"])  + "\n##Intelligence : " + str(current_player_stats["Int"]) + "\n##Health : " + str(current_player_stats["Health"]) + "\n##Defense : " + str(current_player_stats["Defense"])
 	
 	if "Attack" in current_player_stats:
 		player_stats += "\n##Attack : " + str(current_player_stats["Attack"])
 	
-	player_stats += "\n##Exp : " + str(current_player_stats["Experience"])
-	
-	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats
+	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats + "\nPlayer Gold : " + current_player_gold + "\nPlayer Exp : " + current_player_exp  
 	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = profile_text
 func set_selected_equipment(item_type: String, item_name: String, item_stats: String):
 	selected_equipment_data["item_type"] = item_type
 	selected_equipment_data["item_name"] = item_name
 	selected_equipment_data["item_stats"] = item_stats
-
-		
 
 func show_item_info(item_type: String, item_name: String, item_stats: Dictionary):
 	var item: Dictionary
@@ -357,19 +355,20 @@ func update_stats():
 func get_dungeon_reward(dungeon_reward: Dictionary):
 	var player_backpack = PlayerData.player_data["player_backpack"]
 	
-	if "item" in dungeon_reward and dungeon_reward["item"].size() > 0:
-		for item_name in dungeon_reward["item"].keys():
-			var item_quantity = dungeon_reward["item"][item_name]
-			if item_name in player_backpack.keys():
-				player_backpack[item_name] += item_quantity
-			else:
-				player_backpack[item_name] = item_quantity
-
-	if "exp" in dungeon_reward and dungeon_reward["exp"] > 0:
-		PlayerData.player_data["player_stats"]["Experience"] += dungeon_reward["exp"]
 	
-	if "gold" in dungeon_reward and dungeon_reward["gold"] > 0:
-		PlayerData.player_data["player_gold"] += dungeon_reward["gold"]
+	for item_name in dungeon_reward.keys():
+		if item_name != "Gold" and item_name != "Exp":
+			if item_name != "":
+				var item_quantity = dungeon_reward[item_name]
+				if item_name in player_backpack.keys():
+					player_backpack[item_name] += item_quantity
+				else:
+					player_backpack[item_name] = item_quantity
+			
+	if "Exp" in dungeon_reward and dungeon_reward["Exp"] > 0:
+		PlayerData.player_data["player_exp"] += dungeon_reward["Exp"]
+	
+	if "Gold" in dungeon_reward and dungeon_reward["Gold"] > 0:
+		PlayerData.player_data["player_gold"] += dungeon_reward["Gold"]
 		
-	print(PlayerData.player_data)
 	save_data(save_slot, PlayerData.player_data)

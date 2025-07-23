@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dy2s3bub8hwfp"]
+[gd_scene load_steps=7 format=3 uid="uid://dy2s3bub8hwfp"]
 
 [ext_resource type="Script" uid="uid://negt1n1c65d1" path="res://GUI/gui.gd" id="1_3w8el"]
 [ext_resource type="Script" uid="uid://bbukrp27hb30y" path="res://GUI/dungeon.gd" id="2_egdk1"]
@@ -8,6 +8,12 @@ bg_color = Color(0.202077, 0.149073, 0.12129, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_egdk1"]
 bg_color = Color(0.191703, 0.23429, 0.120985, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x71ey"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtfhu"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="GUI" type="Control"]
 layout_mode = 3
@@ -73,7 +79,7 @@ anchor_bottom = 0.5
 offset_left = -540.0
 offset_top = -296.0
 offset_right = 548.0
-offset_bottom = 288.0
+offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -82,8 +88,8 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.993
 anchor_bottom = 0.986
-offset_right = -0.384033
-offset_bottom = 0.175964
+offset_right = -0.383911
+offset_bottom = 8.06403
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -231,17 +237,14 @@ script = ExtResource("2_egdk1")
 
 [node name="Button" type="Button" parent="Content/Dungeon"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -27.9999
-offset_top = 116.0
-offset_right = 99.0001
-offset_bottom = 208.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -104.0
+offset_right = -125.0
+offset_bottom = -12.0
+grow_vertical = 0
 text = "Simulate Clear Dungeon"
 
 [node name="DungeonList" type="VBoxContainer" parent="Content/Dungeon"]
@@ -249,7 +252,15 @@ layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 320.0
+offset_bottom = -192.0
 grow_vertical = 2
+
+[node name="EnvList" type="HBoxContainer" parent="Content/Dungeon"]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 192.0
+offset_right = 1080.0
+offset_bottom = 384.0
 
 [node name="MonsterList" type="HBoxContainer" parent="Content/Dungeon"]
 layout_mode = 1
@@ -258,7 +269,7 @@ anchor_left = 0.993
 anchor_right = 0.993
 offset_left = -752.44
 offset_right = 7.55994
-offset_bottom = 384.0
+offset_bottom = 192.0
 grow_horizontal = 0
 
 [node name="Button" type="Button" parent="Content/Dungeon/MonsterList"]
@@ -267,17 +278,13 @@ layout_mode = 2
 [node name="ShowReward" type="Panel" parent="Content/Dungeon"]
 visible = false
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -184.0
-offset_top = -178.0
-offset_right = 184.0
-offset_bottom = 178.0
+offset_left = -220.0
+offset_right = 236.0
+offset_bottom = 384.0
 grow_horizontal = 2
-grow_vertical = 2
 
 [node name="RewardText" type="Label" parent="Content/Dungeon/ShowReward"]
 layout_mode = 0
@@ -295,6 +302,63 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Close"
 
+[node name="ActionPanel" type="Panel" parent="Content/Dungeon"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 36.0001
+offset_top = -192.0
+offset_right = 540.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x71ey")
+
+[node name="ActionButton" type="Button" parent="Content/Dungeon/ActionPanel"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.0
+offset_right = 192.0
+offset_bottom = 32.0
+grow_vertical = 2
+
+[node name="CloseButton" type="Button" parent="Content/Dungeon/ActionPanel"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -184.0
+offset_top = -32.0
+offset_bottom = 32.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "Close"
+
+[node name="InformationPanel" type="Panel" parent="Content/Dungeon"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -192.0
+offset_right = 576.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qtfhu")
+
+[node name="InformationLabel" type="Label" parent="Content/Dungeon/InformationPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [connection signal="pressed" from="BottomBar/Dungeon" to="." method="_on_dungeon_pressed"]
 [connection signal="pressed" from="TopBar/Profile" to="." method="_on_profile_pressed"]
 [connection signal="pressed" from="TopBar/Main" to="." method="_on_main_pressed"]
@@ -305,3 +369,4 @@ text = "Close"
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Unequip" to="." method="item_unequip"]
 [connection signal="pressed" from="Content/Dungeon/Button" to="Content/Dungeon" method="_on_button_pressed"]
 [connection signal="pressed" from="Content/Dungeon/ShowReward/CloseReward" to="Content/Dungeon" method="_on_close_reward_pressed"]
+[connection signal="pressed" from="Content/Dungeon/ActionPanel/ActionButton" to="Content/Dungeon" method="_on_action_button_pressed"]

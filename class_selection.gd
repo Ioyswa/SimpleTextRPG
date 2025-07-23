@@ -47,6 +47,7 @@ func set_player_class(name_of_class: String):
 	PlayerData.player_data["player_inventory"] = set_player_starter_gear(name_of_class)
 	PlayerData.player_data["player_equipment"] = set_player_equiped_equipment()
 	PlayerData.player_data["player_gold"] = 0.0
+	PlayerData.player_data["player_exp"] = 0.0
 	
 	
 	#print(PlayerData.player_data)

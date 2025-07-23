@@ -3,7 +3,6 @@ extends Node
 var class_list = {
 	"Warrior": {
 		"Stats": {
-			"Experience": 0.0,
 			"Attack": 20,
 			"Str": 20,
 			"Agi": 10,
@@ -16,7 +15,6 @@ var class_list = {
 	},
 	"Archer": {
 		"Stats": {
-			"Experience": 0.0,
 			"Attack": 20,
 			"Str": 5,
 			"Agi": 20,
@@ -29,7 +27,6 @@ var class_list = {
 	},
 	"Mage": {
 		"Stats": {
-			"Experience": 0.0,
 			"Attack": 20,
 			"Str": 5,
 			"Agi": 5,

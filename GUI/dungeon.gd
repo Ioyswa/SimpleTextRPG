@@ -3,7 +3,6 @@ extends Control
 var player_data = PlayerData.player_data
 var dungeon_reward = PlayerData.dungeon_reward
 var player_stats = player_data["player_stats"]
-var player_exp = player_stats["Experience"]
 
 func _ready():
 	show_dungeon_list()
@@ -17,40 +16,24 @@ func save_data(save_slot: int, save_data: Dictionary):
 	file.close()
 
 
-
-func _on_button_pressed():
-	
-	dungeon_reward["item"] = {
-		"test_item": randi() % 6,
-		"slime_soul": randi_range(1, 5)
-	}
-	dungeon_reward["exp"] = snappedf(randf_range(2.0, 5.0), 0.1)
-	dungeon_reward["gold"] = snappedf(randf_range(500.0, 1000.0), 0.1)
-	
-	show_reward(dungeon_reward)
-	
+func show_reward(dungeon_reward: Dictionary):
 	var gui = get_parent().get_parent()
 	gui.get_dungeon_reward(dungeon_reward)
-	
-	#save_data(PlayerData.player_data["save_slot"], PlayerData.player_data)
-
-func show_reward(dungeon_reward: Dictionary):
 	var reward_text = "REWARD: \n\n"
 	
-	if "item" in dungeon_reward and dungeon_reward["item"].size() > 0:
-		reward_text += "Items:\n"
-		for item_name in dungeon_reward["item"].keys():
-			var item_quantity = dungeon_reward["item"][item_name]
-			reward_text += "#" + item_name.replace("_", " ").capitalize() + " x" + str(item_quantity) + "\n"
-		reward_text += "\n"
-	
-	
-	if "exp" in dungeon_reward and dungeon_reward["exp"] > 0:
-		reward_text += "Exp: " + str(dungeon_reward["exp"]) + " XP\n"
-	
-	if "gold" in dungeon_reward and dungeon_reward["gold"] > 0:
-		reward_text += "Gold: " + str(dungeon_reward["gold"]) + "$"
+	for key in dungeon_reward.keys():
+		if key != "Gold" and key != "Exp":
+			var item_quantity = dungeon_reward[key]
+			reward_text += key + " : " + str(item_quantity) + "\n"
+			
 
+	if "Exp" in dungeon_reward and dungeon_reward["Exp"] > 0:
+		reward_text += "Exp: " + str(dungeon_reward["Exp"]) + " XP\n"
+	
+	if "Gold" in dungeon_reward and dungeon_reward["Gold"] > 0:
+		reward_text += "Gold: " + str(dungeon_reward["Gold"]) + "$"
+	
+	
 	$ShowReward/RewardText.text = reward_text
 	$ShowReward.visible = true
 
@@ -62,24 +45,83 @@ func show_dungeon_list():
 		var button = Button.new()
 		var dungeon_name = dungeon.replace("_", " ").capitalize()
 		button.text = dungeon_name
-		button.pressed.connect(show_monster_list.bind(dungeon))
+		button.pressed.connect(show_dungeon_content.bind(dungeon))
 		$DungeonList.add_child(button)
 
-func show_monster_list(dungeon_name: String):
-	#print(dungeon_name)
+func show_dungeon_content(dungeon_name: String):
 	for child in $MonsterList.get_children():
 		if child is Button:
 			child.queue_free()
+			
+	for child in $EnvList.get_children():
+		if child is Button:
+			child.queue_free()
 	
+	var type: String
 	var monster_list = DungeonData.dungeon_data[dungeon_name]["monster_list"]
+	var env_list = DungeonData.dungeon_data[dungeon_name]["env_list"]
 	match dungeon_name:
 		"dungeon_1":
 			for monster_name in monster_list.keys():
+				type = "monster"
 				var button = Button.new()
 				button.text = monster_name
+				button.mouse_entered.connect(show_action_and_info.bind(monster_list[monster_name], type, monster_name, dungeon_name))
+				button.pressed.connect(set_button_data.bind(type, monster_name, dungeon_name))
 				$MonsterList.add_child(button)
+			
+			for env_name in env_list.keys():
+				type = "env"
+				var button = Button.new()
+				button.text = env_name
+				button.mouse_entered.connect(show_action_and_info.bind(env_list[env_name], type, env_name, dungeon_name))
+				button.pressed.connect(set_button_data.bind(type, env_name, dungeon_name))
+				$EnvList.add_child(button)
+			
 		"dungeon_2":
 			for monster_name in monster_list.keys():
 				var button = Button.new()
 				button.text = monster_name
 				$MonsterList.add_child(button)
+
+func show_action_and_info(information: Dictionary, type: String, obj_name: String, dungeon_name: String):
+	$ActionPanel/ActionButton.add_theme_font_size_override("font_size", 24)
+	match type:
+		"monster":
+			$ActionPanel/ActionButton.text = "Attack"
+		"env":
+			$ActionPanel/ActionButton.text = "Harvest"
+
+	var info_text = ""
+	var obj_info = DungeonData.dungeon_data[dungeon_name][type + "_list"][obj_name]
+	var obj_stats = {}
+	if "stats" in obj_info:
+		obj_stats = obj_info["stats"]
+	
+	var obj_drop_list = obj_info["drop_list"]
+	if "Health" in obj_stats.keys() and obj_stats != {}:
+		info_text += "#Health" + str(obj_stats["Health"]) + "\n"
+
+	for drop_name in obj_drop_list.keys():
+		pass
+
+	$InformationPanel/InformationLabel.text = info_text
+
+
+func set_button_data(type: String, obj_name: String, dungeon_name: String):
+	$ActionPanel/ActionButton.pressed.disconnect(attack_monster)
+	$ActionPanel/ActionButton.pressed.disconnect(harvest_env)
+	match type:
+		"monster":
+			$ActionPanel/ActionButton.pressed.connect(attack_monster.bind(dungeon_name, obj_name))
+		"env":
+			$ActionPanel/ActionButton.pressed.connect(harvest_env.bind(dungeon_name, obj_name))
+
+func attack_monster(dungeon_name: String, monster_name: String):
+	var rewards = DungeonData.kill_monster(dungeon_name, monster_name)
+	show_reward(rewards)
+
+func harvest_env(dungeon_name: String, env_name: String):
+	var rewards = DungeonData.harvest_environment(dungeon_name, env_name)
+	show_reward(rewards)
+	#print(rewards)
