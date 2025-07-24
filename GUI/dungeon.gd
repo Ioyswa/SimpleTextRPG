@@ -1,5 +1,7 @@
 extends Control
 
+var save_slot = PlayerData.player_data["save_slot"]
+
 var player_data = PlayerData.player_data
 var dungeon_reward = PlayerData.dungeon_reward
 var player_stats = player_data["player_stats"]
@@ -36,6 +38,7 @@ func show_reward(dungeon_reward: Dictionary):
 	
 	$ShowReward/RewardText.text = reward_text
 	$ShowReward.visible = true
+	save_data(save_slot, PlayerData.player_data)
 
 func _on_close_reward_pressed():
 	$ShowReward.visible = false
@@ -109,7 +112,8 @@ func show_action_and_info(information: Dictionary, type: String, obj_name: Strin
 		var drop_range = [obj_drop_list[drop_name]["min"], obj_drop_list[drop_name]["max"]]
 		var drop_chance = obj_drop_list[drop_name]["chance"]
 		var new_drop_name = drop_name.replace("_", " ").capitalize()
-		info_text += new_drop_name + " drop From " + str(drop_range[0]) + " To " + str(drop_range[1]) + "\n"
+		info_text += new_drop_name + " drop From " + str(drop_range[0]) + " To " + str(drop_range[1]) + " With " + str(drop_chance) + "% Chance" + "\n"
+		
 
 	$InformationPanel/InformationLabel.text = info_text
 
@@ -124,10 +128,14 @@ func set_button_data(type: String, obj_name: String, dungeon_name: String):
 			$ActionPanel/ActionButton.pressed.connect(harvest_env.bind(dungeon_name, obj_name))
 
 func attack_monster(dungeon_name: String, monster_name: String):
+	PlayerData.set_player_levelup_requirement()
+	PlayerData.get_player_level()
 	var rewards = DungeonData.kill_monster(dungeon_name, monster_name)
 	show_reward(rewards)
 
 func harvest_env(dungeon_name: String, env_name: String):
+	PlayerData.set_player_levelup_requirement()
+	PlayerData.get_player_level()
 	var rewards = DungeonData.harvest_environment(dungeon_name, env_name)
 	show_reward(rewards)
 	#print(rewards)

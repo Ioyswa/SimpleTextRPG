@@ -174,6 +174,7 @@ func get_equipment_data():
 	equipment_data_alr_show = true
 
 func get_profile_data():
+
 	$Content/ProfileAndInventory/Profile/ProfilePanel/EquipedItem.hide()
 	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.show()
 	
@@ -187,14 +188,19 @@ func get_profile_data():
 	var current_player_stats = player_data["player_stats"]
 	var current_player_exp = str(player_data["player_exp"])
 	var current_player_gold = str(player_data["player_gold"])
+	var current_player_level = str(player_data["player_level"])
+	var current_levelup_requirement = str(player_data["player_levelup_requirement"])
 	
 	var player_stats = "\n##Strength : " + str(current_player_stats["Str"]) + "\n##Agility : " + str(current_player_stats["Agi"])  + "\n##Intelligence : " + str(current_player_stats["Int"]) + "\n##Health : " + str(current_player_stats["Health"]) + "\n##Defense : " + str(current_player_stats["Defense"])
 	
 	if "Attack" in current_player_stats:
 		player_stats += "\n##Attack : " + str(current_player_stats["Attack"])
 	
-	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats + "\nPlayer Gold : " + current_player_gold + "\nPlayer Exp : " + current_player_exp  
+	var profile_text = "\nPlayer name : " + player_name + "\nPlayer class : " + player_class + "\nPlayer Stats : " + player_stats
+	profile_text +=  "\nPlayer Level : " + current_player_level +  "\nPlayer Gold : " + current_player_gold + "\nPlayer Exp : " + current_player_exp + "/" + current_levelup_requirement 
 	$Content/ProfileAndInventory/Profile/ProfilePanel/ProfileText.text = profile_text
+
+	
 func set_selected_equipment(item_type: String, item_name: String, item_stats: String):
 	selected_equipment_data["item_type"] = item_type
 	selected_equipment_data["item_name"] = item_name
@@ -223,7 +229,7 @@ func set_selected_unequip_item(item_type: String, item_name: String):
 
 	
 	
-	
+
 	
 func item_equip():
 	if selected_equipment_data == {}:

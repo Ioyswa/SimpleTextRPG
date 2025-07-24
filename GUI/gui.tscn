@@ -217,10 +217,12 @@ text = "Unequip"
 
 [node name="ItemDetailPanel" type="Panel" parent="Content/ProfileAndInventory/Inventory"]
 layout_mode = 0
-offset_top = 320.0
-offset_right = 320.0
-offset_bottom = 448.0
+offset_left = 3.0
+offset_top = 344.0
+offset_right = 323.0
+offset_bottom = 480.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_egdk1")
+metadata/_edit_group_ = true
 
 [node name="ItemDetailText" type="Label" parent="Content/ProfileAndInventory/Inventory/ItemDetailPanel"]
 layout_mode = 0
@@ -236,18 +238,6 @@ offset_right = -0.384033
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_egdk1")
-
-[node name="Button" type="Button" parent="Content/Dungeon"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -320.0
-offset_top = -104.0
-offset_right = -125.0
-offset_bottom = -12.0
-grow_vertical = 0
-text = "Simulate Clear Dungeon"
 
 [node name="DungeonList" type="VBoxContainer" parent="Content/Dungeon"]
 layout_mode = 1
@@ -283,8 +273,8 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -220.0
-offset_right = 236.0
+offset_left = 356.0
+offset_right = 540.0
 offset_bottom = 384.0
 grow_horizontal = 2
 
@@ -362,6 +352,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Backpack" type="Control" parent="Content"]
+visible = false
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -410,7 +401,6 @@ text = "Main Menu"
 [connection signal="pressed" from="Content/ProfileAndInventory/Profile/ProfileNavigation/Equipment" to="." method="_on_equipment_pressed"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Equip" to="." method="item_equip"]
 [connection signal="pressed" from="Content/ProfileAndInventory/Inventory/InventoryPanel/InventoryActionPanel/Unequip" to="." method="item_unequip"]
-[connection signal="pressed" from="Content/Dungeon/Button" to="Content/Dungeon" method="_on_button_pressed"]
 [connection signal="pressed" from="Content/Dungeon/ShowReward/CloseReward" to="Content/Dungeon" method="_on_close_reward_pressed"]
 [connection signal="pressed" from="Content/Dungeon/ActionPanel/ActionButton" to="Content/Dungeon" method="_on_action_button_pressed"]
 [connection signal="pressed" from="Main" to="." method="_on_main_pressed"]

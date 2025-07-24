@@ -3,5 +3,7 @@ res://main_menu.tscn
 res://class_selection.tscn
 res://save_menu.tscn
 res://Scene/main.tscn
+res://GUI/dungeon.gd
+res://class_selection.gd
+res://Data/player_data.gd
 res://GUI/gui.gd
-res://GUI/backpack.gd

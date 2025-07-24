@@ -10,5 +10,4 @@ func show_items():
 	for items in player_backpack.keys():
 		var quantity = player_backpack[items]
 		backpack_text += items + " : " + str(quantity) + "\n"
-	
 	$BackpackPanel/BackpackLabel.text = backpack_text
