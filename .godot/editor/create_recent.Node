@@ -1,6 +1,8 @@
 Label
 Panel
+ProgressBar
 Control
+Sprite2D
 HBoxContainer
 Button
 VBoxContainer

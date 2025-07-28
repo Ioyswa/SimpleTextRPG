@@ -27,3 +27,5 @@ func set_player_levelup_bonus_stats():
 			player_data["player_stats"]["Defense"] += 2 * player_data["player_level"]
 		
 		
+func get_player_stats() -> Dictionary:
+	return player_data["player_stats"]

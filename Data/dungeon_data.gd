@@ -5,7 +5,9 @@ var dungeon_data = {
 		"monster_list": {
 			"Slime": {
 				"stats": {
-					"Health": 100
+					"Health": 100,
+					"Attack": 50,
+					"Defense": 50
 				},
 				"drop_list": {
 					"Gold": {
@@ -27,7 +29,9 @@ var dungeon_data = {
 			},
 			"Giant_Slime": {
 				"stats": {
-					"Health": 200
+					"Health": 200,
+					"Attack": 100,
+					"Defense": 50
 				},
 				"drop_list": {
 					"Gold": {
@@ -100,7 +104,7 @@ var dungeon_data = {
 }
 
 func _ready():
-	get_drops("dungeon_1", "monster", "Slime")
+	get_monster_stats("dungeon_1", "Slime")
 
 func get_drops(dungeon_name: String, obj_type: String, obj_name: String) -> Dictionary:
 	var final_drops = {}
@@ -127,6 +131,11 @@ func get_drops(dungeon_name: String, obj_type: String, obj_name: String) -> Dict
 			
 			
 	return final_drops
+
+func get_monster_stats(dungeon_name: String, monster_name: String) -> Dictionary:
+	var monster = dungeon_data[dungeon_name]["monster_list"][monster_name]["stats"]
+	return monster
+	
 
 func kill_monster(dungeon_name: String, monster_name: String) -> Dictionary:
 	return get_drops(dungeon_name, "monster", monster_name)

@@ -128,10 +128,11 @@ func set_button_data(type: String, obj_name: String, dungeon_name: String):
 			$ActionPanel/ActionButton.pressed.connect(harvest_env.bind(dungeon_name, obj_name))
 
 func attack_monster(dungeon_name: String, monster_name: String):
-	PlayerData.set_player_levelup_requirement()
-	PlayerData.get_player_level()
-	var rewards = DungeonData.kill_monster(dungeon_name, monster_name)
-	show_reward(rewards)
+	get_tree().change_scene_to_file("res://Scene/battle.tscn")
+	#PlayerData.set_player_levelup_requirement()
+	#PlayerData.get_player_level()
+	#var rewards = DungeonData.kill_monster(dungeon_name, monster_name)
+	#show_reward(rewards)
 
 func harvest_env(dungeon_name: String, env_name: String):
 	PlayerData.set_player_levelup_requirement()
