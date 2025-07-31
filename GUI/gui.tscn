@@ -264,9 +264,6 @@ offset_right = 7.55994
 offset_bottom = 192.0
 grow_horizontal = 0
 
-[node name="Button" type="Button" parent="Content/Dungeon/MonsterList"]
-layout_mode = 2
-
 [node name="ShowReward" type="Panel" parent="Content/Dungeon"]
 visible = false
 layout_mode = 1

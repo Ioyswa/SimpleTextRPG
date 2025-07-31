@@ -21,6 +21,7 @@ ClassData="*res://Data/class_data.gd"
 PlayerData="*res://Data/player_data.gd"
 EquipmentData="*res://Data/equipment_data.gd"
 DungeonData="*res://Data/dungeon_data.gd"
+BattleData="*res://Data/battle_data.gd"
 
 [display]
 

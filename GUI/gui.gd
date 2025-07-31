@@ -1,6 +1,5 @@
 extends Control
 
-
 var save_slot = PlayerData.player_data["save_slot"]
 
 var content_active: String
@@ -100,6 +99,17 @@ func show_dungeon():
 
 func show_backpack():
 	$Content/Backpack.visible = !$Content/Backpack.visible
+	
+	show_backpack_content()
+	
+func show_backpack_content():
+	var player_backpack = PlayerData.player_data["player_backpack"]
+	var backpack_text = "Items \n\n"
+	for items in player_backpack.keys():
+		var quantity = player_backpack[items]
+		backpack_text += items + " : " + str(quantity) + "\n"
+	$Content/Backpack/BackpackPanel/BackpackLabel.text = backpack_text
+	
 
 func show_equipment():
 	get_equipment_data()
@@ -252,6 +262,7 @@ func item_equip():
 	
 	update_equipment()
 	update_backpack()
+
 func item_unequip():
 	if selected_unequip_item_data == {}:
 		return
@@ -380,7 +391,7 @@ func get_dungeon_reward(dungeon_reward: Dictionary):
 	
 	
 	for item_name in dungeon_reward.keys():
-		if item_name != "Gold" and item_name != "Exp":
+		if item_name != "Gold" and item_name != "Exp" and item_name != "Message":
 			if item_name != "":
 				var item_quantity = dungeon_reward[item_name]
 				if item_name in player_backpack.keys():

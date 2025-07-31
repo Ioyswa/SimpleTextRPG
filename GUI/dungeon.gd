@@ -8,6 +8,8 @@ var player_stats = player_data["player_stats"]
 
 func _ready():
 	show_dungeon_list()
+	BattleData.battle_end.connect(battle_handler)
+	print(BattleData.battle_end.is_connected(battle_handler))
 
 func save_data(save_slot: int, save_data: Dictionary):
 	PlayerData.player_data = save_data
@@ -18,22 +20,27 @@ func save_data(save_slot: int, save_data: Dictionary):
 	file.close()
 
 
-func show_reward(dungeon_reward: Dictionary):
+func show_popup(information: Dictionary):
 	var gui = get_parent().get_parent()
-	gui.get_dungeon_reward(dungeon_reward)
-	var reward_text = "REWARD: \n\n"
+	gui.get_dungeon_reward(information)
+	var reward_text = ""
 	
-	for key in dungeon_reward.keys():
-		if key != "Gold" and key != "Exp":
-			var item_quantity = dungeon_reward[key]
+	reward_text += information["Message"]
+	if information["Message"] == "Win!":
+		reward_text += "\nREWARD: \n\n"
+	
+	
+	for key in information.keys():
+		if key != "Gold" and key != "Exp" and key != "Message":
+			var item_quantity = information[key]
 			reward_text += key + " : " + str(item_quantity) + "\n"
 			
 
-	if "Exp" in dungeon_reward and dungeon_reward["Exp"] > 0:
-		reward_text += "Exp: " + str(dungeon_reward["Exp"]) + " XP\n"
+	if "Exp" in information and information["Exp"] > 0:
+		reward_text += "Exp: " + str(information["Exp"]) + " XP\n"
 	
-	if "Gold" in dungeon_reward and dungeon_reward["Gold"] > 0:
-		reward_text += "Gold: " + str(dungeon_reward["Gold"]) + "$"
+	if "Gold" in information and information["Gold"] > 0:
+		reward_text += "Gold: " + str(information["Gold"]) + "$"
 	
 	
 	$ShowReward/RewardText.text = reward_text
@@ -119,24 +126,52 @@ func show_action_and_info(information: Dictionary, type: String, obj_name: Strin
 
 
 func set_button_data(type: String, obj_name: String, dungeon_name: String):
-	$ActionPanel/ActionButton.pressed.disconnect(attack_monster)
-	$ActionPanel/ActionButton.pressed.disconnect(harvest_env)
+	if $ActionPanel/ActionButton.pressed.is_connected(attack_monster):
+		$ActionPanel/ActionButton.pressed.disconnect(attack_monster)
+	if $ActionPanel/ActionButton.pressed.is_connected(harvest_env):
+		$ActionPanel/ActionButton.pressed.disconnect(harvest_env)
 	match type:
 		"monster":
 			$ActionPanel/ActionButton.pressed.connect(attack_monster.bind(dungeon_name, obj_name))
 		"env":
 			$ActionPanel/ActionButton.pressed.connect(harvest_env.bind(dungeon_name, obj_name))
 
+func battle_handler(state: String, dungeon_name: String, monster_name: String):
+	for child in $".".get_children():
+		if child.name == "Battle": child.queue_free()
+	
+
+	
+	match state:
+		"Draw":
+			var message = {
+				"Message": "Draw!"
+			}
+			show_popup(message)
+		"Lose":
+			var message = {
+				"Message": "Lose!"
+			}
+			show_popup(message)
+			print("Battle lose! Dungeon: ", dungeon_name, " Monster: ", monster_name)
+		"Win":
+			var rewards = DungeonData.kill_monster(dungeon_name, monster_name)
+			rewards["Message"] = "Win!"
+			show_popup(rewards)
+			PlayerData.set_player_levelup_requirement()
+			PlayerData.get_player_level()
+			print("Battle won! Dungeon: ", dungeon_name, " Monster: ", monster_name)
+	
+
 func attack_monster(dungeon_name: String, monster_name: String):
-	get_tree().change_scene_to_file("res://Scene/battle.tscn")
-	#PlayerData.set_player_levelup_requirement()
-	#PlayerData.get_player_level()
-	#var rewards = DungeonData.kill_monster(dungeon_name, monster_name)
-	#show_reward(rewards)
+	var battle_scene = preload("res://Scene/battle.tscn")
+	var battle_scene_instance = battle_scene.instantiate()
+	$".".add_child(battle_scene_instance)
+
 
 func harvest_env(dungeon_name: String, env_name: String):
 	PlayerData.set_player_levelup_requirement()
 	PlayerData.get_player_level()
 	var rewards = DungeonData.harvest_environment(dungeon_name, env_name)
-	show_reward(rewards)
+	show_popup(rewards)
 	#print(rewards)
