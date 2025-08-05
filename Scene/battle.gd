@@ -12,7 +12,9 @@ var current_player_attack
 var current_player_defense
 
 func _ready():
-	battle_preparation("dungeon_1", "Slime")
+	var dungeon_name = BattleData.battle_data["dungeon_name"]
+	var monster_name = BattleData.battle_data["monster_name"]
+	battle_preparation(dungeon_name, monster_name)
 
 func battle_preparation(dungeon_name: String, monster_name: String):
 	monster_stats = DungeonData.get_monster_stats(dungeon_name, monster_name)

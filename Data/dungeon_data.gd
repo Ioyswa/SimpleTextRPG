@@ -93,14 +93,14 @@ var dungeon_data = {
 			},
 		}
 	},
-	"dungeon_2": {
-		"monster_list": {
-			
-		},
-		"env_list": {
-			
-		}
-	}
+	#"dungeon_2": {
+		#"monster_list": {
+			#
+		#},
+		#"env_list": {
+			#
+		#}
+	#}
 }
 
 func _ready():

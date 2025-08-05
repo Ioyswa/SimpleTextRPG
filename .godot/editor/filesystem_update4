@@ -1,11 +1,10 @@
-res://GUI/gui.tscn
 res://main_menu.tscn
-res://GUI/gui.gd
+res://GUI/gui.tscn
 res://class_selection.tscn
 res://save_menu.tscn
 res://Scene/main.tscn
 res://Scene/battle.tscn
-res://GUI/dungeon.gd
 res://Scene/battle.gd
+res://GUI/dungeon.gd
+res://GUI/gui.gd
 res://Data/dungeon_data.gd
-res://GUI/backpack.gd

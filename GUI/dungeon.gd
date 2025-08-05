@@ -166,6 +166,8 @@ func battle_handler(state: String, dungeon_name: String, monster_name: String):
 func attack_monster(dungeon_name: String, monster_name: String):
 	var battle_scene = preload("res://Scene/battle.tscn")
 	var battle_scene_instance = battle_scene.instantiate()
+	BattleData.battle_data["dungeon_name"] = dungeon_name
+	BattleData.battle_data["monster_name"] = monster_name
 	$".".add_child(battle_scene_instance)
 
 

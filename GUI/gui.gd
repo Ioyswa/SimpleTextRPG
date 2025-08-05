@@ -242,6 +242,7 @@ func set_selected_unequip_item(item_type: String, item_name: String):
 
 	
 func item_equip():
+	$Content/ProfileAndInventory/Inventory/ItemDetailPanel/ItemDetailText.text = ""
 	if selected_equipment_data == {}:
 		return
 	
@@ -254,11 +255,14 @@ func item_equip():
 	player_equipment[item_type] = item_name
 	player_inventory[item_type]["Status"] = "Equiped"
 	
+	
 	update_stats()
 	
 	save_data(save_slot, PlayerData.player_data)
 	
 	selected_equipment_data = {}
+	
+	
 	
 	update_equipment()
 	update_backpack()
@@ -275,6 +279,7 @@ func item_unequip():
 	
 	player_equipment[item_type] = "None"
 	player_inventory[item_type]["Status"] = "Not Equip"
+	
 	
 	update_stats()
 	
